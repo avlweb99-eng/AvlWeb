@@ -7,22 +7,75 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
-    :root {
+    :root,
+    :root[data-theme="neon-arcade"] {
       --bg-1: #050714;
       --bg-2: #090d22;
       --bg-3: #120726;
+      --bg-4: #04040e;
       --fg: #f7f4ff;
       --dim: #b7b1d2;
+      --subtle: #d0caeb;
       --glass: rgba(255,255,255,.08);
       --glass-2: rgba(255,255,255,.04);
       --glass-border: rgba(255,255,255,.16);
       --cyan: #52f7ff;
+      --cyan-rgb: 82,247,255;
       --cyan-2: #8efcff;
       --pink: #ff4fd8;
+      --pink-rgb: 255,79,216;
       --pink-2: #ff8ef0;
       --violet: #8d6bff;
+      --violet-rgb: 141,107,255;
       --deep: #050714;
       --shadow: rgba(0,0,0,.42);
+      --canvas-top: #070b1c;
+      --canvas-mid: #060815;
+      --canvas-bottom: #04040d;
+      --select-top: #1e5dff;
+      --select-bottom: #1448cf;
+      --button-start: #00d8ff;
+      --button-mid: #6467ff;
+      --button-end: #ff4fd8;
+      --button-text: #ffffff;
+      --heading: #fdfdff;
+      --value-text: #ffffff;
+      --hint-strong: #ffffff;
+    }
+
+    :root[data-theme="cool-waters"] {
+      --bg-1: #071427;
+      --bg-2: #0c1e3a;
+      --bg-3: #143763;
+      --bg-4: #050f1f;
+      --fg: #eefcff;
+      --dim: #bfdbee;
+      --subtle: #d8f1ff;
+      --glass: rgba(255,255,255,.07);
+      --glass-2: rgba(255,255,255,.035);
+      --glass-border: rgba(176,237,242,.18);
+      --cyan: #59ece7;
+      --cyan-rgb: 89,236,231;
+      --cyan-2: #9cf7f4;
+      --pink: #2f75d5;
+      --pink-rgb: 47,117,213;
+      --pink-2: #6fa9ee;
+      --violet: #1b4c94;
+      --violet-rgb: 27,76,148;
+      --deep: #071427;
+      --shadow: rgba(0,7,20,.45);
+      --canvas-top: #0a1f3b;
+      --canvas-mid: #09172d;
+      --canvas-bottom: #05101f;
+      --select-top: #215aa8;
+      --select-bottom: #173f78;
+      --button-start: #58ebe6;
+      --button-mid: #2a6dcb;
+      --button-end: #1b4c94;
+      --button-text: #ecffff;
+      --heading: #f0feff;
+      --value-text: #efffff;
+      --hint-strong: #efffff;
     }
 
     * { box-sizing: border-box; }
@@ -33,10 +86,10 @@
       color: var(--fg);
       font-family: Inter, Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(circle at 20% 15%, rgba(82,247,255,.14), transparent 28%),
-        radial-gradient(circle at 80% 18%, rgba(255,79,216,.14), transparent 30%),
-        radial-gradient(circle at 50% 100%, rgba(141,107,255,.14), transparent 34%),
-        linear-gradient(180deg, var(--bg-2), var(--bg-1) 42%, #04040e 100%);
+        radial-gradient(circle at 20% 15%, rgba(var(--cyan-rgb), .14), transparent 28%),
+        radial-gradient(circle at 80% 18%, rgba(var(--pink-rgb), .14), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(var(--violet-rgb), .14), transparent 34%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 42%, var(--bg-4) 100%);
       overflow-x: hidden;
     }
 
@@ -83,15 +136,15 @@
       height: auto;
       border-radius: 24px;
       background:
-        radial-gradient(circle at 50% 0%, rgba(82,247,255,.08), transparent 30%),
-        radial-gradient(circle at 50% 100%, rgba(255,79,216,.08), transparent 28%),
-        linear-gradient(180deg, #070b1c 0%, #060815 44%, #04040d 100%);
+        radial-gradient(circle at 50% 0%, rgba(var(--cyan-rgb), .08), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(var(--pink-rgb), .08), transparent 28%),
+        linear-gradient(180deg, var(--canvas-top) 0%, var(--canvas-mid) 44%, var(--canvas-bottom) 100%);
       border: 1px solid rgba(255,255,255,.14);
       box-shadow:
         0 18px 50px rgba(0,0,0,.55),
-        0 0 0 1px rgba(82,247,255,.12) inset,
-        0 0 40px rgba(82,247,255,.08),
-        0 0 80px rgba(255,79,216,.06);
+        0 0 0 1px rgba(var(--cyan-rgb), .12) inset,
+        0 0 40px rgba(var(--cyan-rgb), .08),
+        0 0 80px rgba(var(--pink-rgb), .06);
       image-rendering: auto;
       display: block;
     }
@@ -109,7 +162,7 @@
       overflow: hidden;
       background:
         linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.055)),
-        linear-gradient(135deg, rgba(82,247,255,.06), rgba(255,79,216,.05) 58%, rgba(141,107,255,.08));
+        linear-gradient(135deg, rgba(var(--cyan-rgb), .06), rgba(var(--pink-rgb), .05) 58%, rgba(var(--violet-rgb), .08));
       backdrop-filter: blur(16px) saturate(140%);
       -webkit-backdrop-filter: blur(16px) saturate(140%);
       border: 1px solid var(--glass-border);
@@ -118,7 +171,7 @@
       box-shadow:
         0 14px 36px rgba(0,0,0,.26),
         0 0 0 1px rgba(255,255,255,.02) inset,
-        0 0 24px rgba(82,247,255,.06);
+        0 0 24px rgba(var(--cyan-rgb), .06);
     }
 
     .panel::before {
@@ -128,7 +181,7 @@
       pointer-events: none;
       background:
         linear-gradient(135deg, rgba(255,255,255,.18), transparent 25%, transparent 72%, rgba(255,255,255,.05)),
-        radial-gradient(circle at top right, rgba(82,247,255,.12), transparent 28%);
+        radial-gradient(circle at top right, rgba(var(--cyan-rgb), .12), transparent 28%);
       opacity: .9;
     }
 
@@ -138,10 +191,10 @@
       font: 700 15px/1 Orbitron, Inter, Arial, sans-serif;
       letter-spacing: .12em;
       text-transform: uppercase;
-      color: #fdfdff;
+      color: var(--heading);
       text-shadow:
         0 0 8px rgba(255,255,255,.2),
-        0 0 18px rgba(82,247,255,.18);
+        0 0 18px rgba(var(--cyan-rgb), .18);
     }
 
     .speed-row {
@@ -156,13 +209,13 @@
       align-items: center;
       gap: 10px;
       font-size: 14px;
-      color: #e3def7;
+      color: var(--dim);
     }
 
     .speed-value {
       font-weight: 800;
-      color: white;
-      text-shadow: 0 0 10px rgba(82,247,255,.35);
+      color: var(--value-text);
+      text-shadow: 0 0 10px rgba(var(--cyan-rgb), .35);
     }
 
     input[type="range"] {
@@ -171,11 +224,11 @@
       height: 8px;
       border-radius: 999px;
       background:
-        linear-gradient(90deg, rgba(82,247,255,.85), rgba(141,107,255,.9), rgba(255,79,216,.85));
+        linear-gradient(90deg, rgba(var(--cyan-rgb), .85), rgba(var(--violet-rgb), .9), rgba(var(--pink-rgb), .85));
       outline: none;
       box-shadow:
         inset 0 0 8px rgba(255,255,255,.12),
-        0 0 14px rgba(82,247,255,.16);
+        0 0 14px rgba(var(--cyan-rgb), .16);
     }
 
     input[type="range"]::-webkit-slider-thumb {
@@ -185,10 +238,10 @@
       border-radius: 50%;
       border: 2px solid rgba(255,255,255,.9);
       background:
-        radial-gradient(circle at 30% 30%, white, #b8fbff 42%, #52f7ff 72%);
+        radial-gradient(circle at 30% 30%, white, var(--cyan-2) 42%, var(--cyan) 72%);
       box-shadow:
-        0 0 0 4px rgba(82,247,255,.16),
-        0 0 18px rgba(82,247,255,.55);
+        0 0 0 4px rgba(var(--cyan-rgb), .16),
+        0 0 18px rgba(var(--cyan-rgb), .55);
       cursor: pointer;
     }
 
@@ -198,10 +251,10 @@
       border-radius: 50%;
       border: 2px solid rgba(255,255,255,.9);
       background:
-        radial-gradient(circle at 30% 30%, white, #b8fbff 42%, #52f7ff 72%);
+        radial-gradient(circle at 30% 30%, white, var(--cyan-2) 42%, var(--cyan) 72%);
       box-shadow:
-        0 0 0 4px rgba(82,247,255,.16),
-        0 0 18px rgba(82,247,255,.55);
+        0 0 0 4px rgba(var(--cyan-rgb), .16),
+        0 0 18px rgba(var(--cyan-rgb), .55);
       cursor: pointer;
     }
 
@@ -216,8 +269,8 @@
       font: 700 12px/1 Orbitron, Inter, Arial, sans-serif;
       letter-spacing: .14em;
       text-transform: uppercase;
-      color: #d8faff;
-      text-shadow: 0 0 10px rgba(82,247,255,.22);
+      color: var(--cyan-2);
+      text-shadow: 0 0 10px rgba(var(--cyan-rgb), .22);
     }
 
     .jukebox-wrap {
@@ -226,11 +279,11 @@
       border-radius: 16px;
       background:
         linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.045)),
-        linear-gradient(135deg, rgba(82,247,255,.08), rgba(255,79,216,.06));
+        linear-gradient(135deg, rgba(var(--cyan-rgb), .08), rgba(var(--pink-rgb), .06));
       border: 1px solid rgba(255,255,255,.12);
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.03),
-        0 0 20px rgba(82,247,255,.06);
+        0 0 20px rgba(var(--cyan-rgb), .06);
     }
 
     .jukebox-wrap::after {
@@ -242,7 +295,7 @@
       font-size: 12px;
       color: rgba(255,255,255,.82);
       pointer-events: none;
-      text-shadow: 0 0 12px rgba(82,247,255,.22);
+      text-shadow: 0 0 12px rgba(var(--cyan-rgb), .22);
     }
 
     .song-select {
@@ -252,31 +305,31 @@
       border: 1px solid rgba(255,255,255,.14);
       border-radius: 12px;
       padding: 14px 40px 14px 14px;
-      background: linear-gradient(180deg, #1e5dff, #1448cf);
-      background-color: #1e5dff;
-      color: #fff;
+      background: linear-gradient(180deg, var(--select-top), var(--select-bottom));
+      background-color: var(--select-top);
+      color: var(--button-text);
       font: 700 15px/1.2 Inter, Arial, sans-serif;
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.02),
-        0 0 16px rgba(82,247,255,.05);
+        0 0 16px rgba(var(--cyan-rgb), .05);
       outline: none;
       cursor: pointer;
     }
 
     .song-select option {
-      background: #1e5dff;
-      color: #fff;
+      background: var(--select-top);
+      color: var(--button-text);
     }
 
     .song-select:focus {
-      border-color: rgba(82,247,255,.45);
+      border-color: rgba(var(--cyan-rgb), .45);
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.03),
-        0 0 20px rgba(82,247,255,.14);
+        0 0 20px rgba(var(--cyan-rgb), .14);
     }
 
     .song-desc {
-      color: #d0caeb;
+      color: var(--subtle);
       font-size: 12px;
       line-height: 1.45;
       min-height: 34px;
@@ -299,15 +352,15 @@
       font: 800 21px/1 Orbitron, Inter, Arial, sans-serif;
       letter-spacing: .14em;
       text-transform: uppercase;
-      color: white;
+      color: var(--button-text);
       background:
         linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.08)),
-        linear-gradient(135deg, #00d8ff 0%, #6467ff 48%, #ff4fd8 100%);
+        linear-gradient(135deg, var(--button-start) 0%, var(--button-mid) 48%, var(--button-end) 100%);
       box-shadow:
         0 14px 34px rgba(0,0,0,.34),
         0 0 0 1px rgba(255,255,255,.06) inset,
-        0 0 24px rgba(82,247,255,.22),
-        0 0 48px rgba(255,79,216,.14);
+        0 0 24px rgba(var(--cyan-rgb), .22),
+        0 0 48px rgba(var(--pink-rgb), .14);
       cursor: pointer;
       touch-action: manipulation;
       transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
@@ -329,8 +382,8 @@
       box-shadow:
         0 16px 40px rgba(0,0,0,.36),
         0 0 0 1px rgba(255,255,255,.08) inset,
-        0 0 34px rgba(82,247,255,.28),
-        0 0 58px rgba(255,79,216,.18);
+        0 0 34px rgba(var(--cyan-rgb), .28),
+        0 0 58px rgba(var(--pink-rgb), .18);
     }
 
     .fire-btn:active {
@@ -339,19 +392,19 @@
 
     .hint {
       width: min(96vw, 960px);
-      color: #d6d0ee;
+      color: var(--dim);
       font-size: 14px;
       text-align: center;
       line-height: 1.45;
       padding: 2px 10px max(4px, env(safe-area-inset-bottom));
-      text-shadow: 0 0 14px rgba(141,107,255,.12);
+      text-shadow: 0 0 14px rgba(var(--violet-rgb), .12);
     }
 
     .hint strong {
-      color: white;
+      color: var(--hint-strong);
       text-shadow:
         0 0 8px rgba(255,255,255,.18),
-        0 0 14px rgba(82,247,255,.18);
+        0 0 14px rgba(var(--cyan-rgb), .18);
     }
 
     @media (max-width: 640px) {
@@ -442,6 +495,20 @@
           <div class="song-desc" id="songDescription">Loading soundtrack list from GMFAudio/Jukebox.xml...</div>
         </div>
       </section>
+
+      <section class="panel" aria-labelledby="theme-heading">
+        <h2 id="theme-heading">Theme</h2>
+        <div class="songs">
+          <label class="jukebox-label" for="themeSelect">Skin</label>
+          <div class="jukebox-wrap">
+            <select id="themeSelect" class="song-select" aria-label="Choose visual theme">
+              <option value="neon-arcade">Neon Arcade</option>
+              <option value="cool-waters">Cool Waters</option>
+            </select>
+          </div>
+          <div class="song-desc">Swap the visual skin for the playfield and controls.</div>
+        </div>
+      </section>
     </div>
 
     <div class="hint"><strong>Tap Fire</strong> or press <strong>Space</strong> to shoot. Balls start at 3, then 2, then 1, then pop. If a shot drops back below the dotted line, it’s over. Press Fire after game over to restart.</div>
@@ -480,10 +547,13 @@
   const speedSlider = document.getElementById('speedSlider');
   const speedValue = document.getElementById('speedValue');
   const songSelect = document.getElementById('songSelect');
+  const themeSelect = document.getElementById('themeSelect');
   const songDescription = document.getElementById('songDescription');
   const jukeboxXmlFallback = document.getElementById('jukeboxXmlFallback');
   const AUDIO_DIR = 'GMFAudio';
   const JUKEBOX_XML_PATH = `${AUDIO_DIR}/Jukebox.xml`;
+  const THEME_STORAGE_KEY = 'gfb-theme';
+  const DEFAULT_THEME_KEY = 'neon-arcade';
 
   function buildAudioPath(fileName) {
     return `${AUDIO_DIR}/${encodeURIComponent(fileName).replace(/%2F/g, '/')}`;
@@ -604,16 +674,109 @@
     }
   }
 
-  const UI = {
-    cyan: '#52f7ff',
-    cyanSoft: 'rgba(82,247,255,.38)',
-    pink: '#ff4fd8',
-    pinkSoft: 'rgba(255,79,216,.34)',
-    violet: '#8d6bff',
-    white: '#ffffff',
-    bgTop: '#071022',
-    bgBottom: '#04040d',
-    grid: 'rgba(82,247,255,.07)'
+  const THEMES = {
+    'neon-arcade': {
+      label: 'Neon Arcade',
+      canvas: {
+        cyan: '#52f7ff',
+        pink: '#ff4fd8',
+        white: '#ffffff',
+        sceneBgStops: ['#091224', '#060b17', '#03030b'],
+        topGlow: 'rgba(82,247,255,.14)',
+        cornerGlow: 'rgba(255,79,216,.14)',
+        gridVertical: 'rgba(82,247,255,.055)',
+        gridHorizontal: 'rgba(255,79,216,.035)',
+        frameStroke: 'rgba(82,247,255,.95)',
+        deathLine: 'rgba(255,79,216,.72)',
+        wallGlowStops: ['rgba(82,247,255,.16)', 'rgba(141,107,255,.08)', 'rgba(255,79,216,.16)'],
+        ballShadowActive: 'rgba(82,247,255,.95)',
+        ballShadowIdle: 'rgba(255,79,216,.55)',
+        ballFillStops: ['rgba(255,255,255,.98)', 'rgba(176,249,255,.96)', 'rgba(109,182,255,.88)', 'rgba(138,107,255,.88)', 'rgba(255,79,216,.82)'],
+        ballStroke: 'rgba(255,255,255,.86)',
+        ballSheenStops: ['rgba(255,255,255,.85)', 'rgba(255,255,255,.28)', 'rgba(255,255,255,0)'],
+        ballText: '#07111f',
+        scoreLabel: 'rgba(255,255,255,.82)',
+        scoreValue: '#ffffff',
+        scoreBody: 'rgba(233,229,249,.96)',
+        scoreShadow: 'rgba(82,247,255,.16)',
+        scoreShadowStrong: 'rgba(82,247,255,.2)',
+        hiShadow: 'rgba(255,79,216,.16)',
+        hiShadowStrong: 'rgba(255,79,216,.2)',
+        shooterBaseStops: ['rgba(82,247,255,.95)', 'rgba(255,79,216,.95)'],
+        shooterBaseShadow: 'rgba(82,247,255,.35)',
+        shooterInsetStops: ['#081324', '#040711'],
+        aimStroke: 'rgba(82,247,255,.95)',
+        aimGlow: '#52f7ff',
+        arrowStops: ['#ffffff', '#8efcff', '#52f7ff'],
+        particleSquare: 'rgba(82,247,255,.95)',
+        particleCircle: 'rgba(255,79,216,.95)',
+        zeroText: '#ffffff',
+        debrisFill: 'rgba(255,255,255,.96)',
+        zeroShadow: '#ff4fd8',
+        debrisShadow: '#52f7ff',
+        titleShadow: 'rgba(82,247,255,.2)',
+        titleBody: 'rgba(233,229,249,.96)',
+        gameOverShadow: 'rgba(255,79,216,.22)',
+        gameOverBody: 'rgba(236,232,249,.94)',
+        panelFillStops: ['rgba(255,255,255,.14)', 'rgba(255,255,255,.05)'],
+        panelOverlayStops: ['rgba(82,247,255,.12)', 'rgba(141,107,255,.06)', 'rgba(255,79,216,.1)'],
+        panelStroke: 'rgba(255,255,255,.2)',
+        panelGlow: 'rgba(82,247,255,.08)',
+        panelHighlight: 'rgba(255,255,255,.16)'
+      }
+    },
+    'cool-waters': {
+      label: 'Cool Waters',
+      canvas: {
+        cyan: '#59ece7',
+        pink: '#2f75d5',
+        white: '#ecffff',
+        sceneBgStops: ['#0b1f3b', '#09172d', '#05101f'],
+        topGlow: 'rgba(89,236,231,.16)',
+        cornerGlow: 'rgba(47,117,213,.18)',
+        gridVertical: 'rgba(89,236,231,.065)',
+        gridHorizontal: 'rgba(47,117,213,.045)',
+        frameStroke: 'rgba(89,236,231,.95)',
+        deathLine: 'rgba(47,117,213,.76)',
+        wallGlowStops: ['rgba(89,236,231,.18)', 'rgba(47,117,213,.09)', 'rgba(27,76,148,.16)'],
+        ballShadowActive: 'rgba(89,236,231,.92)',
+        ballShadowIdle: 'rgba(47,117,213,.56)',
+        ballFlat: true,
+        ballFlatFill: '#163f78',
+        ballFillStops: ['rgba(245,255,255,.97)', 'rgba(120,241,236,.95)', 'rgba(52,135,225,.9)', 'rgba(23,73,145,.92)', 'rgba(8,27,58,.95)'],
+        ballStroke: 'rgba(89,236,231,.92)',
+        ballSheenStops: ['rgba(255,255,255,.68)', 'rgba(255,255,255,.18)', 'rgba(255,255,255,0)'],
+        ballText: '#5ae8e5',
+        scoreLabel: 'rgba(223,251,255,.84)',
+        scoreValue: '#ecffff',
+        scoreBody: 'rgba(214,243,255,.94)',
+        scoreShadow: 'rgba(89,236,231,.18)',
+        scoreShadowStrong: 'rgba(89,236,231,.22)',
+        hiShadow: 'rgba(47,117,213,.18)',
+        hiShadowStrong: 'rgba(47,117,213,.24)',
+        shooterBaseStops: ['rgba(89,236,231,.96)', 'rgba(47,117,213,.96)'],
+        shooterBaseShadow: 'rgba(89,236,231,.34)',
+        shooterInsetStops: ['#0a213d', '#061326'],
+        aimStroke: 'rgba(89,236,231,.96)',
+        aimGlow: '#59ece7',
+        arrowStops: ['#f3ffff', '#9cf7f4', '#59ece7'],
+        particleSquare: 'rgba(89,236,231,.96)',
+        particleCircle: 'rgba(47,117,213,.94)',
+        zeroText: '#dffcff',
+        debrisFill: 'rgba(223,252,255,.96)',
+        zeroShadow: '#2f75d5',
+        debrisShadow: '#59ece7',
+        titleShadow: 'rgba(89,236,231,.22)',
+        titleBody: 'rgba(214,243,255,.94)',
+        gameOverShadow: 'rgba(47,117,213,.24)',
+        gameOverBody: 'rgba(215,241,255,.92)',
+        panelFillStops: ['rgba(255,255,255,.12)', 'rgba(255,255,255,.04)'],
+        panelOverlayStops: ['rgba(89,236,231,.1)', 'rgba(47,117,213,.07)', 'rgba(27,76,148,.12)'],
+        panelStroke: 'rgba(196,244,255,.18)',
+        panelGlow: 'rgba(89,236,231,.08)',
+        panelHighlight: 'rgba(255,255,255,.14)'
+      }
+    }
   };
 
   const TRACKS = {
@@ -701,6 +864,7 @@
     mode: 'shooter',
     score: 0,
     hi: Number(localStorage.getItem('gfb-highscore') || 0),
+    themeKey: DEFAULT_THEME_KEY,
     firstShot: false,
     angleDeg: 182,
     angleVel: 2,
@@ -722,6 +886,22 @@
     pulse: 0,
     cameraShake: 0,
   };
+
+  function currentTheme() {
+    return THEMES[state.themeKey] || THEMES[DEFAULT_THEME_KEY];
+  }
+
+  function applyTheme(themeKey) {
+    const normalized = THEMES[themeKey] ? themeKey : DEFAULT_THEME_KEY;
+    state.themeKey = normalized;
+    document.documentElement.dataset.theme = normalized;
+    themeSelect.value = normalized;
+    localStorage.setItem(THEME_STORAGE_KEY, normalized);
+  }
+
+  function restoreThemePreference() {
+    applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || DEFAULT_THEME_KEY);
+  }
 
   function saveHi() {
     localStorage.setItem('gfb-highscore', String(state.hi));
@@ -1487,22 +1667,23 @@
   }
 
   function drawSceneBackground() {
+    const theme = currentTheme().canvas;
     const bg = ctx.createLinearGradient(0, 0, 0, geom.height);
-    bg.addColorStop(0, '#091224');
-    bg.addColorStop(0.48, '#060b17');
-    bg.addColorStop(1, '#03030b');
+    bg.addColorStop(0, theme.sceneBgStops[0]);
+    bg.addColorStop(0.48, theme.sceneBgStops[1]);
+    bg.addColorStop(1, theme.sceneBgStops[2]);
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, geom.width, geom.height);
 
     const glowTop = ctx.createRadialGradient(geom.width * 0.5, 40, 20, geom.width * 0.5, 40, 240);
-    glowTop.addColorStop(0, 'rgba(82,247,255,.14)');
-    glowTop.addColorStop(1, 'rgba(82,247,255,0)');
+    glowTop.addColorStop(0, theme.topGlow);
+    glowTop.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = glowTop;
     ctx.fillRect(0, 0, geom.width, geom.height);
 
     const glowCorner = ctx.createRadialGradient(geom.width * 0.8, geom.height * 0.2, 20, geom.width * 0.8, geom.height * 0.2, 220);
-    glowCorner.addColorStop(0, 'rgba(255,79,216,.14)');
-    glowCorner.addColorStop(1, 'rgba(255,79,216,0)');
+    glowCorner.addColorStop(0, theme.cornerGlow);
+    glowCorner.addColorStop(1, 'rgba(255,255,255,0)');
     ctx.fillStyle = glowCorner;
     ctx.fillRect(0, 0, geom.width, geom.height);
 
@@ -1513,7 +1694,7 @@
     ctx.clip();
 
     for (let x = geom.playLeft - 40; x < geom.playRight + 50; x += 28) {
-      ctx.strokeStyle = 'rgba(82,247,255,.055)';
+      ctx.strokeStyle = theme.gridVertical;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x + gridOffset, geom.playTop);
@@ -1522,7 +1703,7 @@
     }
 
     for (let y = geom.playTop; y < geom.deathLine + 30; y += 24) {
-      ctx.strokeStyle = 'rgba(255,79,216,.035)';
+      ctx.strokeStyle = theme.gridHorizontal;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(geom.playLeft - 22, y);
@@ -1543,14 +1724,15 @@
   }
 
   function drawPlayfieldFrame() {
+    const theme = currentTheme().canvas;
     const pulse = 0.55 + 0.45 * Math.sin(state.time * 2.4);
     const frameGlow = 10 + 5 * pulse;
 
     ctx.save();
-    ctx.strokeStyle = 'rgba(82,247,255,.95)';
+    ctx.strokeStyle = theme.frameStroke;
     ctx.lineWidth = 2.2;
     ctx.shadowBlur = frameGlow;
-    ctx.shadowColor = UI.cyan;
+    ctx.shadowColor = theme.cyan;
     ctx.beginPath();
     ctx.moveTo(geom.playLeft, geom.playTop);
     ctx.lineTo(geom.playLeft, geom.deathLine);
@@ -1560,9 +1742,9 @@
     ctx.lineTo(geom.playRight, geom.playTop);
     ctx.stroke();
 
-    ctx.strokeStyle = 'rgba(255,79,216,.72)';
+    ctx.strokeStyle = theme.deathLine;
     ctx.shadowBlur = 12;
-    ctx.shadowColor = UI.pink;
+    ctx.shadowColor = theme.pink;
     ctx.setLineDash([7, 6]);
     ctx.beginPath();
     ctx.moveTo(geom.playLeft, geom.deathLine);
@@ -1573,9 +1755,9 @@
 
     ctx.save();
     const wallGlow = ctx.createLinearGradient(geom.playLeft, 0, geom.playRight, 0);
-    wallGlow.addColorStop(0, 'rgba(82,247,255,.16)');
-    wallGlow.addColorStop(.5, 'rgba(141,107,255,.08)');
-    wallGlow.addColorStop(1, 'rgba(255,79,216,.16)');
+    wallGlow.addColorStop(0, theme.wallGlowStops[0]);
+    wallGlow.addColorStop(.5, theme.wallGlowStops[1]);
+    wallGlow.addColorStop(1, theme.wallGlowStops[2]);
     ctx.strokeStyle = wallGlow;
     ctx.lineWidth = 7;
     ctx.globalAlpha = 0.22;
@@ -1591,6 +1773,7 @@
   }
 
   function drawBall(b) {
+    const theme = currentTheme().canvas;
     ctx.save();
     ctx.translate(b.x, b.y);
     ctx.rotate(b.rotation * Math.PI / 180);
@@ -1598,97 +1781,104 @@
     const radius = b.r;
     const outerGlow = radius * 0.6 + 6;
     ctx.shadowBlur = outerGlow;
-    ctx.shadowColor = b === state.active && state.mode === 'shooter' ? 'rgba(82,247,255,.95)' : 'rgba(255,79,216,.55)';
-
-    const fill = ctx.createRadialGradient(-radius * 0.35, -radius * 0.45, radius * 0.15, 0, 0, radius * 1.1);
-    fill.addColorStop(0, 'rgba(255,255,255,.98)');
-    fill.addColorStop(0.24, 'rgba(176,249,255,.96)');
-    fill.addColorStop(0.52, 'rgba(109,182,255,.88)');
-    fill.addColorStop(0.8, 'rgba(138,107,255,.88)');
-    fill.addColorStop(1, 'rgba(255,79,216,.82)');
+    ctx.shadowColor = b === state.active && state.mode === 'shooter' ? theme.ballShadowActive : theme.ballShadowIdle;
 
     ctx.beginPath();
     ctx.arc(0, 0, radius, 0, Math.PI * 2);
-    ctx.fillStyle = fill;
+    if (theme.ballFlat) {
+      ctx.fillStyle = theme.ballFlatFill;
+    } else {
+      const fill = ctx.createRadialGradient(-radius * 0.35, -radius * 0.45, radius * 0.15, 0, 0, radius * 1.1);
+      fill.addColorStop(0, theme.ballFillStops[0]);
+      fill.addColorStop(0.24, theme.ballFillStops[1]);
+      fill.addColorStop(0.52, theme.ballFillStops[2]);
+      fill.addColorStop(0.8, theme.ballFillStops[3]);
+      fill.addColorStop(1, theme.ballFillStops[4]);
+      ctx.fillStyle = fill;
+    }
     ctx.fill();
 
     ctx.shadowBlur = 0;
     ctx.lineWidth = Math.max(1.5, radius * 0.12);
-    ctx.strokeStyle = 'rgba(255,255,255,.86)';
+    ctx.strokeStyle = theme.ballStroke;
     ctx.stroke();
 
-    const sheen = ctx.createRadialGradient(-radius * 0.45, -radius * 0.55, 0, -radius * 0.28, -radius * 0.28, radius * 0.75);
-    sheen.addColorStop(0, 'rgba(255,255,255,.85)');
-    sheen.addColorStop(0.28, 'rgba(255,255,255,.28)');
-    sheen.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = sheen;
-    ctx.beginPath();
-    ctx.arc(0, 0, radius * 0.96, 0, Math.PI * 2);
-    ctx.fill();
+    if (!theme.ballFlat) {
+      const sheen = ctx.createRadialGradient(-radius * 0.45, -radius * 0.55, 0, -radius * 0.28, -radius * 0.28, radius * 0.75);
+      sheen.addColorStop(0, theme.ballSheenStops[0]);
+      sheen.addColorStop(0.28, theme.ballSheenStops[1]);
+      sheen.addColorStop(1, theme.ballSheenStops[2]);
+      ctx.fillStyle = sheen;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius * 0.96, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-    ctx.fillStyle = '#07111f';
+    ctx.fillStyle = theme.ballText;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = `800 ${Math.max(12, radius * 1.28)}px Orbitron, Arial`;
     const shown = Math.max(0, 4 - b.f);
     ctx.shadowBlur = 8;
-    ctx.shadowColor = 'rgba(255,255,255,.28)';
+    ctx.shadowColor = theme.scoreShadowStrong;
     ctx.fillText(String(shown), 0, 1);
     ctx.restore();
   }
 
   function drawScoreLabels() {
+    const theme = currentTheme().canvas;
     ctx.save();
     ctx.textAlign = 'left';
 
-    ctx.fillStyle = 'rgba(255,255,255,.82)';
+    ctx.fillStyle = theme.scoreLabel;
     ctx.font = '700 13px Orbitron, Arial';
     ctx.letterSpacing = '0.08em';
     ctx.shadowBlur = 10;
-    ctx.shadowColor = 'rgba(82,247,255,.16)';
+    ctx.shadowColor = theme.scoreShadow;
     ctx.fillText('Score', 22, 30);
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = theme.scoreValue;
     ctx.font = '800 28px Orbitron, Arial';
     ctx.shadowBlur = 16;
-    ctx.shadowColor = 'rgba(82,247,255,.2)';
+    ctx.shadowColor = theme.scoreShadowStrong;
     ctx.fillText(String(state.score), 20, 58);
 
     ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(255,255,255,.82)';
+    ctx.fillStyle = theme.scoreLabel;
     ctx.font = '700 13px Orbitron, Arial';
     ctx.shadowBlur = 10;
-    ctx.shadowColor = 'rgba(255,79,216,.16)';
+    ctx.shadowColor = theme.hiShadow;
     ctx.fillText('Hi', geom.width - 22, 30);
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = theme.scoreValue;
     ctx.font = '800 28px Orbitron, Arial';
     ctx.shadowBlur = 16;
-    ctx.shadowColor = 'rgba(255,79,216,.2)';
+    ctx.shadowColor = theme.hiShadowStrong;
     ctx.fillText(String(state.hi), geom.width - 20, 58);
 
     ctx.restore();
   }
 
   function drawShooter() {
+    const theme = currentTheme().canvas;
     const tip = angleToShooterTip();
 
     ctx.save();
     ctx.translate(geom.shooterX, geom.deathLine);
 
     const baseGrad = ctx.createLinearGradient(-18, 0, 18, 55);
-    baseGrad.addColorStop(0, 'rgba(82,247,255,.95)');
-    baseGrad.addColorStop(1, 'rgba(255,79,216,.95)');
+    baseGrad.addColorStop(0, theme.shooterBaseStops[0]);
+    baseGrad.addColorStop(1, theme.shooterBaseStops[1]);
     ctx.fillStyle = baseGrad;
     ctx.shadowBlur = 18;
-    ctx.shadowColor = 'rgba(82,247,255,.35)';
+    ctx.shadowColor = theme.shooterBaseShadow;
     roundRect(-22, -2, 44, 60, 14);
     ctx.fill();
 
     ctx.shadowBlur = 0;
     const insetGrad = ctx.createLinearGradient(0, 0, 0, 50);
-    insetGrad.addColorStop(0, '#081324');
-    insetGrad.addColorStop(1, '#040711');
+    insetGrad.addColorStop(0, theme.shooterInsetStops[0]);
+    insetGrad.addColorStop(1, theme.shooterInsetStops[1]);
     ctx.fillStyle = insetGrad;
     roundRect(-10, 6, 20, 46, 8);
     ctx.fill();
@@ -1697,10 +1887,10 @@
 
     if (state.mode === 'shooter') {
       ctx.save();
-      ctx.strokeStyle = 'rgba(82,247,255,.95)';
+      ctx.strokeStyle = theme.aimStroke;
       ctx.lineWidth = 2;
       ctx.shadowBlur = 16;
-      ctx.shadowColor = UI.cyan;
+      ctx.shadowColor = theme.aimGlow;
       ctx.beginPath();
       ctx.moveTo(geom.shooterX, geom.shooterY);
       ctx.lineTo(tip.x, tip.y);
@@ -1726,12 +1916,12 @@
     ctx.rotate(rad - Math.PI / 2);
 
     const arrowGrad = ctx.createLinearGradient(0, -12, 0, 10);
-    arrowGrad.addColorStop(0, '#ffffff');
-    arrowGrad.addColorStop(0.3, '#8efcff');
-    arrowGrad.addColorStop(1, '#52f7ff');
+    arrowGrad.addColorStop(0, theme.arrowStops[0]);
+    arrowGrad.addColorStop(0.3, theme.arrowStops[1]);
+    arrowGrad.addColorStop(1, theme.arrowStops[2]);
     ctx.fillStyle = arrowGrad;
     ctx.shadowBlur = 16;
-    ctx.shadowColor = UI.cyan;
+    ctx.shadowColor = theme.aimGlow;
     ctx.beginPath();
     ctx.moveTo(0, -13);
     ctx.lineTo(10, 10);
@@ -1743,6 +1933,7 @@
   }
 
   function drawParticles() {
+    const theme = currentTheme().canvas;
     for (const p of state.particles) {
       ctx.save();
       ctx.globalAlpha = Math.max(0, p.life / 100);
@@ -1750,13 +1941,13 @@
 
       if (p.kind === 1) {
         ctx.shadowBlur = 12;
-        ctx.shadowColor = UI.cyan;
-        ctx.fillStyle = 'rgba(82,247,255,.95)';
+        ctx.shadowColor = theme.cyan;
+        ctx.fillStyle = theme.particleSquare;
         ctx.fillRect(-2.5, -2.5, 5, 5);
       } else {
         ctx.shadowBlur = 12;
-        ctx.shadowColor = UI.pink;
-        ctx.fillStyle = 'rgba(255,79,216,.95)';
+        ctx.shadowColor = theme.pink;
+        ctx.fillStyle = theme.particleCircle;
         ctx.beginPath();
         ctx.arc(0, 0, 2.4, 0, Math.PI * 2);
         ctx.fill();
@@ -1769,18 +1960,18 @@
       ctx.translate(d.x, d.y);
       ctx.rotate(d.rotation * Math.PI / 180);
       if (d.textZero) {
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = theme.zeroText;
         ctx.font = '800 28px Orbitron, Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.shadowBlur = 16;
-        ctx.shadowColor = UI.pink;
+        ctx.shadowColor = theme.zeroShadow;
         ctx.fillText('0', 0, 0);
       } else {
         ctx.globalAlpha = Math.max(0, d.alpha / 100);
         ctx.shadowBlur = 10;
-        ctx.shadowColor = UI.cyan;
-        ctx.fillStyle = 'rgba(255,255,255,.96)';
+        ctx.shadowColor = theme.debrisShadow;
+        ctx.fillStyle = theme.debrisFill;
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(d.p1.x, d.p1.y);
@@ -1794,6 +1985,7 @@
 
   function drawTitleCard() {
     if (state.titleAlpha <= 0) return;
+    const theme = currentTheme().canvas;
 
     ctx.save();
     ctx.globalAlpha = state.titleAlpha;
@@ -1802,14 +1994,14 @@
     glassPanel(x, y, w, h, 20);
 
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = theme.scoreValue;
     ctx.shadowBlur = 18;
-    ctx.shadowColor = 'rgba(82,247,255,.2)';
+    ctx.shadowColor = theme.titleShadow;
     ctx.font = `800 ${Math.max(26, geom.width * 0.048)}px Orbitron, Arial`;
     ctx.fillText('GIMME FRICTION BABY', geom.width / 2, y + h * 0.30);
 
     ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(233,229,249,.96)';
+    ctx.fillStyle = theme.titleBody;
     ctx.font = `500 ${Math.max(15, geom.width * 0.025)}px Inter, Arial`;
     ctx.fillText('Hit Fire or Space to shoot a 3-ball.', geom.width / 2, y + h * 0.57);
     ctx.fillText('Each hit counts it down: 3 → 2 → 1 → pop.', geom.width / 2, y + h * 0.73);
@@ -1820,20 +2012,21 @@
 
   function drawGameOverPanel() {
     if (state.mode !== 'gomove') return;
+    const theme = currentTheme().canvas;
     const y = state.gameOverPanelY;
     ctx.save();
     ctx.translate(geom.width / 2, y);
     glassPanel(-150, -58, 300, 116, 22);
 
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = theme.scoreValue;
     ctx.font = '800 34px Orbitron, Arial';
     ctx.shadowBlur = 18;
-    ctx.shadowColor = 'rgba(255,79,216,.22)';
+    ctx.shadowColor = theme.gameOverShadow;
     ctx.fillText('GAME OVER', 0, -8);
 
     ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(236,232,249,.94)';
+    ctx.fillStyle = theme.gameOverBody;
     ctx.font = '500 18px Inter, Arial';
     ctx.fillText('Press Fire or Space to play again', 0, 24);
     ctx.restore();
@@ -1850,10 +2043,11 @@
   }
 
   function glassPanel(x, y, w, h, r) {
+    const theme = currentTheme().canvas;
     ctx.save();
     const fill = ctx.createLinearGradient(x, y, x, y + h);
-    fill.addColorStop(0, 'rgba(255,255,255,.14)');
-    fill.addColorStop(1, 'rgba(255,255,255,.05)');
+    fill.addColorStop(0, theme.panelFillStops[0]);
+    fill.addColorStop(1, theme.panelFillStops[1]);
     ctx.fillStyle = fill;
     ctx.shadowBlur = 26;
     ctx.shadowColor = 'rgba(0,0,0,.28)';
@@ -1861,24 +2055,24 @@
     ctx.fill();
 
     const overlay = ctx.createLinearGradient(x, y, x + w, y + h);
-    overlay.addColorStop(0, 'rgba(82,247,255,.12)');
-    overlay.addColorStop(.6, 'rgba(141,107,255,.06)');
-    overlay.addColorStop(1, 'rgba(255,79,216,.1)');
+    overlay.addColorStop(0, theme.panelOverlayStops[0]);
+    overlay.addColorStop(.6, theme.panelOverlayStops[1]);
+    overlay.addColorStop(1, theme.panelOverlayStops[2]);
     ctx.fillStyle = overlay;
     roundRect(x, y, w, h, r);
     ctx.fill();
 
-    ctx.strokeStyle = 'rgba(255,255,255,.2)';
+    ctx.strokeStyle = theme.panelStroke;
     ctx.lineWidth = 1;
     ctx.shadowBlur = 12;
-    ctx.shadowColor = 'rgba(82,247,255,.08)';
+    ctx.shadowColor = theme.panelGlow;
     roundRect(x, y, w, h, r);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.moveTo(x + 20, y + 12);
     ctx.lineTo(x + w - 20, y + 12);
-    ctx.strokeStyle = 'rgba(255,255,255,.16)';
+    ctx.strokeStyle = theme.panelHighlight;
     ctx.shadowBlur = 0;
     ctx.stroke();
     ctx.restore();
@@ -1936,6 +2130,10 @@
     setTrack(e.target.value);
   });
 
+  themeSelect.addEventListener('change', (e) => {
+    applyTheme(e.target.value);
+  });
+
   loadJukeboxTracks().catch((error) => {
     console.error('Failed to load jukebox tracks:', error);
     setJukeboxUnavailable('Could not load soundtrack list from GMFAudio/Jukebox.xml.');
@@ -1969,6 +2167,7 @@
     setTimeout(applyResponsiveLayout, 80);
   });
 
+  restoreThemePreference();
   applyResponsiveLayout();
   restore();
   tick();
