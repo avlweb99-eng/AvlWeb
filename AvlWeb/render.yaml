@@ -3,6 +3,7 @@ services:
     name: quiet-playground-site
     runtime: node
     plan: free
+    rootDir: AvlWeb
     buildCommand: npm install
     startCommand: npm start
     autoDeployTrigger: commit
