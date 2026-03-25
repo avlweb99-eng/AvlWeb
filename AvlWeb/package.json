@@ -1,8 +1,0 @@
-{
-  "name": "quiet-playground-site",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "node serve.mjs"
-  }
-}
