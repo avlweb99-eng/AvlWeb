@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Games</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="site-shell" id="top">
+    <header class="site-header" aria-label="Main header">
+      <a class="brand" href="index.html" aria-label="Games home">
+        <img
+          class="brand__logo"
+          src="Images/games-line-logo.svg"
+          alt=""
+          width="34"
+          height="34"
+        />
+        <span class="brand__wordmark">Games</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a class="site-nav__link" href="index.html">Home</a>
+        <a class="site-nav__link" href="index.html#games">Games</a>
+        <a class="site-nav__link" href="index.html#games">Utilities</a>
+        <a class="site-nav__link" href="avl-local.html">AVL Local</a>
+      </nav>
+    </header>
+
+    <main class="page-main">
+      <section class="catalog" id="games" aria-labelledby="catalog-heading">
+        <h1 class="visually-hidden" id="catalog-heading">Games</h1>
+        <div class="catalog__grid" id="project-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <span>&copy; <span data-current-year></span> GameHub. All rights reserved.</span>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

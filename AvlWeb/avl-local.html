@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AVL Local</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header" aria-label="Main header">
+      <a class="brand" href="index.html" aria-label="Games home">
+        <img
+          class="brand__logo"
+          src="Images/games-line-logo.svg"
+          alt=""
+          width="34"
+          height="34"
+        />
+        <span class="brand__wordmark">Games</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a class="site-nav__link" href="index.html">Home</a>
+        <a class="site-nav__link" href="index.html#games">Games</a>
+        <a class="site-nav__link" href="index.html#games">Utilities</a>
+        <a class="site-nav__link" href="avl-local.html" aria-current="page">AVL Local</a>
+      </nav>
+    </header>
+
+    <main class="page-main avl-main">
+      <section class="avl-overview" aria-label="AVL local overview">
+        <article class="info-card intro-card">
+          <p class="section-kicker">AVL LOCAL</p>
+          <h1 class="section-title">Regional status and Asheville events in one place.</h1>
+          <p class="section-copy">
+            Keep an eye on the Blue Ridge Parkway and scan upcoming Asheville shows
+            without leaving the site. The parkway module pulls the latest road status,
+            and the calendar below rotates across local venue feeds.
+          </p>
+        </article>
+
+        <article class="info-card parkway-card" aria-labelledby="parkway-title">
+          <div class="parkway-card__header">
+            <div>
+              <p class="section-kicker">BLUE RIDGE PARKWAY</p>
+              <h2 class="section-subtitle" id="parkway-title">Asheville Mileposts 381.9 - 393.6</h2>
+            </div>
+            <span class="status-chip" data-parkway-status-chip>Loading</span>
+          </div>
+          <p class="parkway-card__summary" data-parkway-summary>
+            Checking the latest road status for the Asheville corridor.
+          </p>
+          <button class="action-button" id="parkway-action" type="button" disabled>
+            Official status page
+          </button>
+        </article>
+      </section>
+
+      <section class="info-card events-panel" aria-labelledby="events-title">
+        <div class="events-panel__head">
+          <div>
+            <p class="section-kicker">LOCAL EVENTS CALENDAR</p>
+            <h2 class="section-title section-title--small" id="events-title">Upcoming Asheville picks</h2>
+          </div>
+          <p class="events-panel__copy">
+            Start with the mixed AVL feed or jump straight into each venue.
+          </p>
+        </div>
+
+        <div class="venue-tabs" role="tablist" aria-label="AVL venues">
+          <button class="venue-tab is-active" type="button" role="tab" aria-selected="true" data-venue-tab="avl-picks">AVL Picks</button>
+          <button class="venue-tab" type="button" role="tab" aria-selected="false" data-venue-tab="asheville-yards">Asheville Yards</button>
+          <button class="venue-tab" type="button" role="tab" aria-selected="false" data-venue-tab="orange-peel">The Orange Peel</button>
+          <button class="venue-tab" type="button" role="tab" aria-selected="false" data-venue-tab="grey-eagle">The Grey Eagle</button>
+          <button class="venue-tab" type="button" role="tab" aria-selected="false" data-venue-tab="harrahs-cherokee-center">Harrah's</button>
+          <button class="venue-tab" type="button" role="tab" aria-selected="false" data-venue-tab="asheville-music-hall">Music Hall</button>
+          <button class="venue-tab" type="button" role="tab" aria-selected="false" data-venue-tab="revival-asheville">Revival</button>
+        </div>
+
+        <p class="events-status" id="events-status" aria-live="polite">
+          Loading upcoming events...
+        </p>
+        <div class="events-grid" id="events-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>&copy; <span data-current-year></span> GameHub. All rights reserved.</span>
+    </footer>
+  </div>
+
+  <script type="module" src="avl-local.js"></script>
+</body>
+</html>
