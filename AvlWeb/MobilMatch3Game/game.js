@@ -16,6 +16,24 @@ const META = {
   seed: { label: "Seed", short: "D", color: "#c88b47", glow: "rgba(200,139,71,.32)" },
   ladybug: { label: "Ladybug", short: "G", color: "#f25c49", glow: "rgba(242,92,73,.32)" }
 };
+const SPRITE_SOURCES = {
+  water: "./Assets/Droplet.png",
+  bloom: "./Assets/Flower.png",
+  leaf: "./Assets/Leaf.png",
+  seed: "./Assets/Seed.png",
+  sun: "./Assets/Sun.png",
+  ladybug: "./Assets/Ladybug.png"
+};
+const TILE_SPRITES = Object.fromEntries(Object.entries(SPRITE_SOURCES).map(([type, src]) => {
+  const image = new Image();
+  image.src = src;
+  return [type, image];
+}));
+Object.values(TILE_SPRITES).forEach((image) => {
+  image.addEventListener("load", () => {
+    if (state.levelConfig) drawScene();
+  });
+});
 const STAGES = [
   { title: "Sprout Roof", body: "A soft green comeback with fresh boxes, loose soil, and the first bright planters.", unlocks: ["Mint basil", "Sunbeam marigold", "Tin rain barrel"], threshold: 60 },
   { title: "Butterfly Deck", body: "A painted bench and wildflower corners invite bees, butterflies, and a cozy coffee break.", unlocks: ["Butterfly fern", "Stripe awning", "Pollinator arch"], threshold: 130 },
@@ -957,6 +975,13 @@ function drawTile(current, x, y, radius, glow) {
   ctx.save();
   ctx.shadowColor = META[current.type].glow;
   ctx.shadowBlur = 14 + glow * 12;
+  const sprite = TILE_SPRITES[current.type];
+  if (sprite && sprite.complete && sprite.naturalWidth > 0) {
+    const size = radius * 2.22;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(sprite, x - size / 2, y - size / 2, size, size);
+  } else
   if (current.type === "bloom") {
     ctx.fillStyle = META.bloom.color;
     for (let index = 0; index < 5; index += 1) {
