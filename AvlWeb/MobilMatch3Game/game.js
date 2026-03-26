@@ -17,12 +17,12 @@ const META = {
   ladybug: { label: "Ladybug", short: "G", color: "#f25c49", glow: "rgba(242,92,73,.32)" }
 };
 const SPRITE_SOURCES = {
-  water: "./Assets/Droplet.png",
-  bloom: "./Assets/Flower.png",
-  leaf: "./Assets/Leaf.png",
-  seed: "./Assets/Seed.png",
-  sun: "./Assets/Sun.png",
-  ladybug: "./Assets/Ladybug.png"
+  water: "./Assets/Droplet.svg",
+  bloom: "./Assets/Flower.svg",
+  leaf: "./Assets/Leaf.svg",
+  seed: "./Assets/Seed.svg",
+  sun: "./Assets/Sun.svg",
+  ladybug: "./Assets/Ladybug.svg"
 };
 const TILE_SPRITES = Object.fromEntries(Object.entries(SPRITE_SOURCES).map(([type, src]) => {
   const image = new Image();
