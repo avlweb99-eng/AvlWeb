@@ -33,6 +33,49 @@ const CLUBS = [
   { title: "Bouquet Relay", body: "Every win adds bouquet badges to a group goal with shared rewards." },
   { title: "Kindness Bonus", body: "Miss a day and clubmates keep your streak warm once per week." }
 ];
+const ANIMATION_MS = {
+  swap: 150,
+  reject: 220,
+  fall: 210,
+  glow: 150
+};
+const SOUND_CUES = {
+  yes: {
+    assetUrl: null,
+    synth(bank) {
+      bank.playTone({ type: "triangle", start: 520, end: 820, duration: 0.12, gain: 0.12 });
+      bank.playTone({ type: "sine", start: 680, end: 980, duration: 0.16, gain: 0.08, delay: 0.03 });
+    }
+  },
+  no: {
+    assetUrl: null,
+    synth(bank) {
+      bank.playTone({ type: "square", start: 220, end: 170, duration: 0.1, gain: 0.09 });
+      bank.playTone({ type: "sawtooth", start: 170, end: 120, duration: 0.16, gain: 0.07, delay: 0.04 });
+    }
+  },
+  jackpot: {
+    assetUrl: null,
+    synth(bank) {
+      bank.playTone({ type: "triangle", start: 520, end: 960, duration: 0.16, gain: 0.11 });
+      bank.playTone({ type: "triangle", start: 760, end: 1280, duration: 0.18, gain: 0.1, delay: 0.04 });
+      bank.playTone({ type: "sine", start: 1040, end: 1560, duration: 0.2, gain: 0.08, delay: 0.08 });
+    }
+  },
+  win: {
+    assetUrl: null,
+    synth(bank) {
+      bank.playTone({ type: "triangle", start: 430, end: 860, duration: 0.18, gain: 0.12 });
+      bank.playTone({ type: "sine", start: 640, end: 980, duration: 0.14, gain: 0.09, delay: 0.04 });
+    }
+  },
+  lose: {
+    assetUrl: null,
+    synth(bank) {
+      bank.playTone({ type: "sawtooth", start: 260, end: 110, duration: 0.24, gain: 0.1 });
+    }
+  }
+};
 const DEFAULT_PROGRESS = {
   level: 1,
   petals: 0,
@@ -92,28 +135,64 @@ const ui = {
   boosterShuffle: $("boosterShuffle")
 };
 
-const audio = {
-  ctx: null,
-  ping(a, b, d) {
-    if (!state.progress.soundOn) return;
+class SoundBank {
+  constructor(cues) {
+    this.cues = cues;
+    this.ctx = null;
+    this.assetPlayers = new Map();
+  }
+
+  ensureContext() {
+    if (!state.progress.soundOn) return null;
     const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
+    if (!AudioContext) return null;
     this.ctx = this.ctx || new AudioContext();
     if (this.ctx.state === "suspended") this.ctx.resume();
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    const now = this.ctx.currentTime;
-    osc.frequency.setValueAtTime(a, now);
-    osc.frequency.exponentialRampToValueAtTime(b, now + d);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.12, now + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + d);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + d + 0.02);
+    return this.ctx;
   }
-};
+
+  playTone({ type = "sine", start = 440, end = 440, duration = 0.1, gain = 0.1, delay = 0 }) {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const amp = ctx.createGain();
+    const now = ctx.currentTime + delay;
+    osc.type = type;
+    osc.frequency.setValueAtTime(start, now);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(80, end), now + duration);
+    amp.gain.setValueAtTime(0.0001, now);
+    amp.gain.exponentialRampToValueAtTime(gain, now + 0.01);
+    amp.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    osc.connect(amp);
+    amp.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + duration + 0.03);
+  }
+
+  playAsset(name, url) {
+    if (!state.progress.soundOn) return;
+    let player = this.assetPlayers.get(name);
+    if (!player) {
+      player = new Audio(url);
+      player.preload = "auto";
+      this.assetPlayers.set(name, player);
+    }
+    player.currentTime = 0;
+    player.play().catch(() => {});
+  }
+
+  play(name) {
+    const cue = this.cues[name];
+    if (!cue) return;
+    if (cue.assetUrl) {
+      this.playAsset(name, cue.assetUrl);
+      return;
+    }
+    if (cue.synth) cue.synth(this);
+  }
+}
+
+const audio = new SoundBank(SOUND_CUES);
 
 const state = {
   tab: "garden",
@@ -135,7 +214,14 @@ const state = {
   overlayAction: null,
   deterministic: false,
   lastFrame: 0,
-  lastInput: null
+  lastInput: null,
+  inputLocked: false,
+  animations: {
+    swaps: [],
+    falls: [],
+    glows: [],
+    waiters: []
+  }
 };
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -371,6 +457,54 @@ function center(row, col) {
   };
 }
 
+function hasActiveAnimations() {
+  return state.animations.swaps.length > 0 || state.animations.falls.length > 0 || state.animations.glows.length > 0;
+}
+
+function flushAnimationWaiters() {
+  if (hasActiveAnimations()) return;
+  const waiters = state.animations.waiters.splice(0);
+  waiters.forEach((resolve) => resolve());
+}
+
+function waitForAnimations() {
+  if (!hasActiveAnimations()) return Promise.resolve();
+  return new Promise((resolve) => {
+    state.animations.waiters.push(resolve);
+  });
+}
+
+function animateSwapTiles(a, b, mode) {
+  state.animations.swaps.push({
+    kind: mode,
+    elapsed: 0,
+    duration: mode === "reject" ? ANIMATION_MS.reject : ANIMATION_MS.swap,
+    a: { row: a.row, col: a.col, tile: clone(state.board[a.row][a.col]) },
+    b: { row: b.row, col: b.col, tile: clone(state.board[b.row][b.col]) }
+  });
+  return waitForAnimations();
+}
+
+function animateGlow(cells, tone = "match") {
+  state.animations.glows.push({
+    cells: cells.map((cell) => ({ row: cell.row, col: cell.col })),
+    tone,
+    elapsed: 0,
+    duration: ANIMATION_MS.glow
+  });
+  return waitForAnimations();
+}
+
+function animateFalls(moves) {
+  if (!moves.length) return Promise.resolve();
+  state.animations.falls.push({
+    elapsed: 0,
+    duration: ANIMATION_MS.fall,
+    moves: moves.map((move) => ({ ...move, tile: clone(move.tile) }))
+  });
+  return waitForAnimations();
+}
+
 function burst(cells, color) {
   cells.forEach((cell) => {
     const point = center(cell.row, cell.col);
@@ -431,30 +565,46 @@ function expandSpecials(cells) {
 }
 
 function dropAndFill() {
+  const nextBoard = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+  const moves = [];
+
   for (let col = 0; col < COLS; col += 1) {
     let pointer = ROWS - 1;
     for (let row = ROWS - 1; row >= 0; row -= 1) {
-      if (state.board[row][col]) {
-        state.board[pointer][col] = state.board[row][col];
-        if (pointer !== row) state.board[row][col] = null;
-        pointer -= 1;
+      const current = state.board[row][col];
+      if (!current) continue;
+      nextBoard[pointer][col] = current;
+      if (pointer !== row) {
+        moves.push({
+          tile: current,
+          fromRow: row,
+          fromCol: col,
+          toRow: pointer,
+          toCol: col
+        });
       }
+      pointer -= 1;
     }
-    for (let row = pointer; row >= 0; row -= 1) state.board[row][col] = null;
-  }
-  for (let row = 0; row < ROWS; row += 1) {
-    for (let col = 0; col < COLS; col += 1) {
-      if (!state.board[row][col]) state.board[row][col] = tile(TYPES[rand(TYPES.length)]);
+
+    for (let row = pointer; row >= 0; row -= 1) {
+      const spawnRow = -(pointer - row + 1);
+      const spawned = tile(TYPES[rand(TYPES.length)]);
+      nextBoard[row][col] = spawned;
+      moves.push({
+        tile: spawned,
+        fromRow: spawnRow,
+        fromCol: col,
+        toRow: row,
+        toCol: col
+      });
     }
   }
-  while (findMatches(state.board).cells.length) {
-    findMatches(state.board).cells.forEach((cell) => {
-      state.board[cell.row][cell.col] = tile(TYPES[rand(TYPES.length)]);
-    });
-  }
+
+  state.board = nextBoard;
+  return moves;
 }
 
-function resolve(pair = null) {
+async function resolve(pair = null) {
   let found = findMatches(state.board);
   let cascade = 0;
   if (!found.cells.length) return false;
@@ -466,6 +616,11 @@ function resolve(pair = null) {
     const clear = new Set(cells.map((cell) => cellKey(cell.row, cell.col)));
     const counts = {};
     let weeds = 0;
+
+    if (cascade > 1) {
+      audio.play("jackpot");
+      await animateGlow(cells, "jackpot");
+    }
 
     cells.forEach((cell) => {
       const current = state.board[cell.row][cell.col];
@@ -489,7 +644,8 @@ function resolve(pair = null) {
     burst(cells, META[found.groups[0]?.type || "bloom"].color);
     cells.forEach((cell) => { state.board[cell.row][cell.col] = null; });
     if (spawn) state.board[spawn.row][spawn.col] = tile(spawn.type, { special: spawn.special });
-    dropAndFill();
+    const fallMoves = dropAndFill();
+    await animateFalls(fallMoves);
     found = findMatches(state.board);
   }
 
@@ -498,7 +654,6 @@ function resolve(pair = null) {
     `Cascade x${cascade}! Surprise petals tucked into your basket.` :
     "Fresh matches bloom into garden progress.";
   if (cascade >= 2) state.progress.petals += 5 * cascade;
-  audio.ping(520, 260, 0.14);
   renderHud();
 
   if (goalsDone()) winLevel();
@@ -583,7 +738,7 @@ function winLevel() {
   state.progress.level = Math.min(30, state.progress.level + 1);
   state.rewardMessage = `Garden restored. +${petals} petals and a fresh rooftop reward.`;
   saveProgress();
-  audio.ping(430, 860, 0.18);
+  audio.play("win");
   showOverlay({
     kicker: "Level cleared",
     title: "The rooftop got brighter",
@@ -597,7 +752,7 @@ function winLevel() {
 function loseLevel() {
   state.mode = "lost";
   state.message = "Out of moves. Try again with a fresh tray.";
-  audio.ping(260, 110, 0.24);
+  audio.play("lose");
   showOverlay({
     kicker: "Garden nap",
     title: "Out of moves, not out of momentum",
@@ -608,8 +763,8 @@ function loseLevel() {
   });
 }
 
-function select(cell) {
-  if (state.mode !== "play" || !ui.overlay.classList.contains("hidden")) return;
+async function select(cell) {
+  if (state.mode !== "play" || !ui.overlay.classList.contains("hidden") || state.inputLocked) return;
   if (!state.selected) {
     state.selected = cell;
     state.message = `${META[state.board[cell.row][cell.col].type].label} selected.`;
@@ -630,19 +785,28 @@ function select(cell) {
   }
   if (state.movesLeft <= 0) return;
   const first = state.selected;
-  swap(state.board, first, cell);
-  if (!findMatches(state.board).cells.length) {
-    swap(state.board, first, cell);
+  const previewBoard = clone(state.board);
+  swap(previewBoard, first, cell);
+  state.inputLocked = true;
+  if (!findMatches(previewBoard).cells.length) {
+    await animateSwapTiles(first, cell, "reject");
     state.selected = null;
     state.message = "That swap will not help this garden yet.";
     state.rewardMessage = "Try the hint if you want a low-pressure nudge.";
+    audio.play("no");
+    state.inputLocked = false;
     renderHud();
     return;
   }
+
+  await animateSwapTiles(first, cell, "commit");
+  swap(state.board, first, cell);
   state.selected = null;
   state.movesLeft -= 1;
-  audio.ping(420, 620, 0.08);
-  resolve([first, cell]);
+  audio.play("yes");
+  renderHud();
+  await resolve([first, cell]);
+  state.inputLocked = false;
 }
 
 function moveCursor(dx, dy) {
@@ -653,10 +817,12 @@ function moveCursor(dx, dy) {
   drawScene();
 }
 
-function useBooster(typeName) {
-  if (!ui.overlay.classList.contains("hidden") || state.mode !== "play") return;
+async function useBooster(typeName) {
+  if (!ui.overlay.classList.contains("hidden") || state.mode !== "play" || state.inputLocked) return;
   if (typeName === "shuffle") {
+    state.inputLocked = true;
     shuffleBoard(true);
+    state.inputLocked = false;
     return;
   }
   if (state.progress.boosters[typeName] <= 0) {
@@ -677,9 +843,12 @@ function useBooster(typeName) {
     burst([state.selected], META[current.type].color);
     state.board[state.selected.row][state.selected.col] = tile(TYPES[rand(TYPES.length)]);
     state.selected = null;
-    dropAndFill();
-    resolve();
-    state.rewardMessage = "Trowel used. One stubborn tile gone.";
+    state.inputLocked = true;
+    const fallMoves = dropAndFill();
+    await animateFalls(fallMoves);
+    await resolve();
+    state.inputLocked = false;
+    if (state.mode === "play") state.rewardMessage = "Trowel used. One stubborn tile gone.";
   }
   if (typeName === "bloom") {
     state.progress.boosters.bloom -= 1;
@@ -694,9 +863,12 @@ function useBooster(typeName) {
     goalAdd(target, cells.length);
     burst(cells, META[target].color);
     cells.forEach((cell) => { state.board[cell.row][cell.col] = null; });
-    dropAndFill();
-    resolve();
-    state.rewardMessage = `Bloom Burst cleared every ${META[target].label.toLowerCase()} tile.`;
+    state.inputLocked = true;
+    const fallMoves = dropAndFill();
+    await animateFalls(fallMoves);
+    await resolve();
+    state.inputLocked = false;
+    if (state.mode === "play") state.rewardMessage = `Bloom Burst cleared every ${META[target].label.toLowerCase()} tile.`;
   }
   saveProgress();
   renderHud();
@@ -877,6 +1049,79 @@ function drawTile(current, x, y, radius, glow) {
   ctx.restore();
 }
 
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+function easeInOutQuad(t) {
+  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+}
+
+function animatedSwapProgress(animation) {
+  const t = clamp(animation.elapsed / animation.duration, 0, 1);
+  if (animation.kind === "reject") {
+    return t < 0.5 ? easeInOutQuad(t * 2) : easeInOutQuad((1 - t) * 2);
+  }
+  return easeInOutQuad(t);
+}
+
+function buildHiddenCellSet() {
+  const hidden = new Set();
+  state.animations.swaps.forEach((animation) => {
+    hidden.add(cellKey(animation.a.row, animation.a.col));
+    hidden.add(cellKey(animation.b.row, animation.b.col));
+  });
+  state.animations.falls.forEach((animation) => {
+    animation.moves.forEach((move) => {
+      hidden.add(cellKey(move.toRow, move.toCol));
+    });
+  });
+  return hidden;
+}
+
+function drawGlowAnimations(tileSize) {
+  state.animations.glows.forEach((animation) => {
+    const t = clamp(animation.elapsed / animation.duration, 0, 1);
+    const pulse = Math.sin(t * Math.PI);
+    animation.cells.forEach((cell) => {
+      const { x, y } = center(cell.row, cell.col);
+      const tileData = state.board[cell.row][cell.col];
+      const baseColor = tileData ? META[tileData.type].color : "#fff2a8";
+      ctx.save();
+      ctx.globalAlpha = animation.tone === "jackpot" ? pulse * 0.55 : pulse * 0.32;
+      ctx.shadowColor = baseColor;
+      ctx.shadowBlur = animation.tone === "jackpot" ? 28 : 16;
+      ctx.fillStyle = animation.tone === "jackpot" ? "rgba(255,250,210,0.95)" : "rgba(255,255,255,0.8)";
+      rounded(x - tileSize * 0.42, y - tileSize * 0.42, tileSize * 0.84, tileSize * 0.84, 18);
+      ctx.fill();
+      ctx.restore();
+    });
+  });
+}
+
+function drawSwapAnimations(tileSize) {
+  state.animations.swaps.forEach((animation) => {
+    const progress = animatedSwapProgress(animation);
+    const startA = center(animation.a.row, animation.a.col);
+    const endA = center(animation.b.row, animation.b.col);
+    const startB = center(animation.b.row, animation.b.col);
+    const endB = center(animation.a.row, animation.a.col);
+    drawTile(animation.a.tile, startA.x + (endA.x - startA.x) * progress, startA.y + (endA.y - startA.y) * progress, tileSize * 0.36, 0.4);
+    drawTile(animation.b.tile, startB.x + (endB.x - startB.x) * progress, startB.y + (endB.y - startB.y) * progress, tileSize * 0.36, 0.4);
+  });
+}
+
+function drawFallAnimations(tileSize) {
+  state.animations.falls.forEach((animation) => {
+    const progress = easeOutCubic(clamp(animation.elapsed / animation.duration, 0, 1));
+    animation.moves.forEach((move) => {
+      const start = center(move.fromRow, move.fromCol);
+      const end = center(move.toRow, move.toCol);
+      drawTile(move.tile, start.x + (end.x - start.x) * progress, start.y + (end.y - start.y) * progress, tileSize * 0.36, 0);
+    });
+  });
+}
+
 function drawScene() {
   const dpr = Math.max(1, window.devicePixelRatio || 1);
   const width = canvas.width / dpr;
@@ -927,6 +1172,7 @@ function drawScene() {
 
   const { x, y, size, tile: tileSize } = state.boardRect;
   const hint = findMove(state.board);
+  const hiddenCells = buildHiddenCellSet();
   rounded(x - 12, y - 12, size + 24, size + 24, 30);
   ctx.fillStyle = "rgba(19,51,38,.2)";
   ctx.fill();
@@ -951,7 +1197,7 @@ function drawScene() {
       ctx.fill();
 
       const current = state.board[row][col];
-      if (!current) continue;
+      if (!current || hiddenCells.has(cellKey(row, col))) continue;
       drawTile(current, px + tileSize * 0.5, py + tileSize * 0.5, tileSize * 0.36, glow);
       if (current.weed) {
         ctx.strokeStyle = "rgba(53,88,34,.88)";
@@ -977,6 +1223,10 @@ function drawScene() {
       }
     }
   }
+
+  drawGlowAnimations(tileSize);
+  drawFallAnimations(tileSize);
+  drawSwapAnimations(tileSize);
 
   state.particles.forEach((particle) => {
     ctx.globalAlpha = clamp(particle.life, 0, 1);
@@ -1015,6 +1265,19 @@ function step(ms) {
     particle.life -= dt * 1.8;
     return particle.life > 0;
   });
+  state.animations.swaps = state.animations.swaps.filter((animation) => {
+    animation.elapsed += ms;
+    return animation.elapsed < animation.duration;
+  });
+  state.animations.falls = state.animations.falls.filter((animation) => {
+    animation.elapsed += ms;
+    return animation.elapsed < animation.duration;
+  });
+  state.animations.glows = state.animations.glows.filter((animation) => {
+    animation.elapsed += ms;
+    return animation.elapsed < animation.duration;
+  });
+  flushAnimationWaiters();
 }
 
 function resize() {
@@ -1045,7 +1308,7 @@ function pointToCell(clientX, clientY) {
   return inBounds(row, col) ? { row, col } : null;
 }
 
-function handleCanvasInput(clientX, clientY) {
+async function handleCanvasInput(clientX, clientY) {
   const now = performance.now();
   if (state.lastInput) {
     const sameSpot = Math.abs(state.lastInput.x - clientX) < 2 && Math.abs(state.lastInput.y - clientY) < 2;
@@ -1054,7 +1317,7 @@ function handleCanvasInput(clientX, clientY) {
   state.lastInput = { x: clientX, y: clientY, time: now };
   const cell = pointToCell(clientX, clientY);
   if (cell) {
-    select(cell);
+    await select(cell);
     drawScene();
   }
 }
@@ -1064,19 +1327,19 @@ if (window.PointerEvent) {
     if (!event.isPrimary) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
     event.preventDefault();
-    handleCanvasInput(event.clientX, event.clientY);
+    void handleCanvasInput(event.clientX, event.clientY);
   });
 } else {
   canvas.addEventListener("mousedown", (event) => {
     if (event.button !== 0) return;
-    handleCanvasInput(event.clientX, event.clientY);
+    void handleCanvasInput(event.clientX, event.clientY);
   });
 
   canvas.addEventListener("touchstart", (event) => {
     const touch = event.touches[0];
     if (!touch) return;
     event.preventDefault();
-    handleCanvasInput(touch.clientX, touch.clientY);
+    void handleCanvasInput(touch.clientX, touch.clientY);
   }, { passive: false });
 }
 
@@ -1100,7 +1363,7 @@ ui.hint.addEventListener("click", () => {
 });
 
 document.querySelectorAll(".booster").forEach((button) => {
-  button.addEventListener("click", () => useBooster(button.dataset.booster));
+  button.addEventListener("click", () => { void useBooster(button.dataset.booster); });
 });
 
 document.querySelectorAll(".tab").forEach((button) => {
@@ -1122,8 +1385,7 @@ window.addEventListener("keydown", async (event) => {
     if (event.key === "ArrowDown") { event.preventDefault(); moveCursor(0, 1); return; }
     if (event.key === " " || event.code === "Space") {
       event.preventDefault();
-      select({ row: state.cursor.row, col: state.cursor.col });
-      drawScene();
+      void select({ row: state.cursor.row, col: state.cursor.col }).then(() => drawScene());
       return;
     }
   }
