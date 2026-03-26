@@ -1,0 +1,444 @@
+:root {
+  --bg-top: #f5efe2;
+  --bg-bottom: #dfe9d5;
+  --paper: rgba(255, 251, 244, 0.92);
+  --paper-strong: #fffaf2;
+  --ink: #2b4438;
+  --muted: #637969;
+  --line: rgba(63, 95, 79, 0.12);
+  --shadow: 0 18px 44px rgba(65, 89, 66, 0.16);
+  --rose: #ee7f8f;
+  --leaf: #78b86f;
+  --water: #64add8;
+  --sun: #f2bd52;
+  --seed: #c88b47;
+  --ladybug: #f25c49;
+  --mint: #6ab39c;
+  --lavender: #8d80cb;
+  --gold: #c28f31;
+  --font-display: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Verdana", "Geneva", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(120, 184, 111, 0.22), transparent 28%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+}
+
+body {
+  display: flex;
+  justify-content: center;
+}
+
+.app-shell {
+  width: min(100%, 460px);
+  padding: 18px 14px 40px;
+}
+
+.hero-card,
+.play-card,
+.panel-card,
+.progress-card,
+.collection-item,
+.small-card {
+  background: var(--paper);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: var(--shadow);
+}
+
+.hero-card {
+  padding: 18px;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -50% 40%;
+  height: 180px;
+  background: radial-gradient(circle, rgba(120, 184, 111, 0.26), transparent 65%);
+}
+
+.eyebrow,
+.section-label {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.hero-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+h1 {
+  margin-top: 8px;
+  font-size: 1.72rem;
+  line-height: 1.05;
+  max-width: 280px;
+}
+
+#subhead {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
+  max-width: 300px;
+}
+
+.icon-button,
+.tab,
+.booster,
+.floating-button,
+.primary-button {
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.icon-button {
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(43, 68, 56, 0.08);
+  white-space: nowrap;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.pill {
+  padding: 12px 10px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.74);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pill.accent {
+  background: linear-gradient(180deg, rgba(242, 189, 82, 0.2), rgba(255, 255, 255, 0.9));
+}
+
+.pill-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.phone-frame {
+  margin-top: 16px;
+}
+
+.play-card {
+  padding: 14px;
+  border-radius: 30px;
+}
+
+.play-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moves-chip {
+  min-width: 80px;
+  border-radius: 20px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(120, 184, 111, 0.12), rgba(255, 255, 255, 0.95));
+  text-align: center;
+}
+
+.moves-chip span,
+.progress-copy span {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.goal-strip {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.goal-chip {
+  flex: 0 0 auto;
+  min-width: 110px;
+  padding: 10px 12px;
+  border-radius: 20px;
+  background: rgba(246, 240, 229, 0.94);
+  box-shadow: inset 0 0 0 1px rgba(43, 68, 56, 0.07);
+}
+
+.goal-chip strong {
+  display: block;
+  margin-top: 4px;
+}
+
+.canvas-wrap {
+  position: relative;
+  margin-top: 14px;
+}
+
+#boardCanvas {
+  width: 100%;
+  display: block;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #a3c98a, #6aa36d 16%, #3d6f57 100%);
+  touch-action: manipulation;
+}
+
+.floating-button {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 251, 244, 0.92);
+  box-shadow: 0 10px 24px rgba(32, 56, 45, 0.18);
+}
+
+.status-row,
+.booster-row,
+.tab-row,
+.collection-grid,
+.small-cards {
+  display: grid;
+  gap: 10px;
+}
+
+.status-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.booster-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 14px;
+}
+
+.booster {
+  padding: 12px 10px;
+  border-radius: 20px;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(43, 68, 56, 0.08);
+}
+
+.booster span,
+.collection-item p,
+.small-card p {
+  display: block;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.tab-row {
+  margin-top: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tab {
+  padding: 12px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.tab.active {
+  background: var(--paper-strong);
+  box-shadow: var(--shadow);
+}
+
+.panel-stack {
+  margin-top: 14px;
+}
+
+.panel {
+  display: none;
+  gap: 12px;
+}
+
+.panel.active {
+  display: grid;
+}
+
+.hero-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.panel-card,
+.progress-card,
+.collection-item,
+.small-card {
+  border-radius: 24px;
+  padding: 16px;
+}
+
+.badge {
+  min-width: 72px;
+  padding: 14px 12px;
+  border-radius: 20px;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(238, 127, 143, 0.16), rgba(255, 255, 255, 0.92));
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+.progress-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.progress-copy strong {
+  text-align: right;
+}
+
+.progress-track {
+  height: 12px;
+  border-radius: 999px;
+  margin-top: 12px;
+  background: rgba(86, 138, 99, 0.16);
+  overflow: hidden;
+}
+
+.progress-track.lavender {
+  background: rgba(141, 128, 203, 0.18);
+}
+
+.progress-track.mint {
+  background: rgba(106, 179, 156, 0.18);
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #78b86f, #c5d97a);
+  transition: width 180ms ease;
+}
+
+.progress-fill.lavender {
+  background: linear-gradient(90deg, #8d80cb, #d6b0f0);
+}
+
+.progress-fill.mint {
+  background: linear-gradient(90deg, #6ab39c, #a9e0c1);
+}
+
+.collection-grid,
+.small-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.collection-item,
+.small-card {
+  min-height: 112px;
+}
+
+.collection-item strong,
+.small-card strong {
+  display: block;
+  margin-top: 6px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 43, 35, 0.42);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 20;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay-card {
+  width: min(100%, 360px);
+  border-radius: 30px;
+  padding: 22px;
+  background: #fffaf2;
+  box-shadow: 0 20px 50px rgba(31, 44, 32, 0.28);
+}
+
+.overlay-card h2 {
+  margin-top: 8px;
+  font-size: 1.7rem;
+}
+
+.overlay-card p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.overlay-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 18px;
+}
+
+.reward-pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(242, 189, 82, 0.15);
+}
+
+.primary-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #86ba6f, #6d9f54);
+  color: white;
+  font-weight: 700;
+}
+
+@media (min-width: 520px) {
+  .app-shell {
+    padding-top: 26px;
+  }
+
+  h1 {
+    max-width: 320px;
+  }
+}

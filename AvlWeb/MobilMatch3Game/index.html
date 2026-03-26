@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#f5f0e4">
+  <title>Pocket Garden Rescue</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero-card">
+      <p class="eyebrow">Pocket Garden Rescue</p>
+      <div class="hero-topline">
+        <div>
+          <h1>Restore rooftop gardens with quick, juicy matches.</h1>
+          <p id="subhead">Turn gray city corners into warm, collectible little worlds.</p>
+        </div>
+        <button id="muteButton" class="icon-button" type="button" aria-label="Toggle sound">Sound On</button>
+      </div>
+      <div class="hero-stats">
+        <div class="pill">
+          <span class="pill-label">Streak</span>
+          <strong id="streakValue">Day 1</strong>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Garden</span>
+          <strong id="stageValue">Sprout Roof</strong>
+        </div>
+        <div class="pill accent">
+          <span class="pill-label">Petals</span>
+          <strong id="petalValue">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="phone-frame">
+      <section class="play-card">
+        <div class="play-header">
+          <div>
+            <p class="section-label">Chapter</p>
+            <h2 id="levelTitle">Level 1</h2>
+          </div>
+          <div class="moves-chip">
+            <span>Moves</span>
+            <strong id="movesValue">12</strong>
+          </div>
+        </div>
+
+        <div class="goal-strip" id="goalStrip"></div>
+
+        <div class="canvas-wrap">
+          <canvas id="boardCanvas" width="720" height="920" aria-label="Pocket Garden Rescue board"></canvas>
+          <button id="hintButton" class="floating-button" type="button">Hint</button>
+        </div>
+
+        <div class="status-row">
+          <div>
+            <span class="section-label">Combo</span>
+            <strong id="comboValue">x1</strong>
+          </div>
+          <div>
+            <span class="section-label">Reward</span>
+            <strong id="rewardValue">Daily bloom bundle ready</strong>
+          </div>
+        </div>
+
+        <div class="booster-row">
+          <button class="booster" type="button" data-booster="trowel">
+            <span>Trowel</span>
+            <strong id="boosterTrowel">2</strong>
+          </button>
+          <button class="booster" type="button" data-booster="bloom">
+            <span>Bloom Burst</span>
+            <strong id="boosterBloom">1</strong>
+          </button>
+          <button class="booster" type="button" data-booster="shuffle">
+            <span>Shuffle</span>
+            <strong id="boosterShuffle">2</strong>
+          </button>
+        </div>
+      </section>
+
+      <nav class="tab-row" aria-label="Garden tabs">
+        <button class="tab active" type="button" data-tab="garden">Garden</button>
+        <button class="tab" type="button" data-tab="events">Events</button>
+        <button class="tab" type="button" data-tab="club">Club</button>
+      </nav>
+
+      <section class="panel-stack">
+        <article class="panel active" data-panel="garden">
+          <div class="panel-card hero-panel">
+            <div>
+              <p class="section-label">Restoration</p>
+              <h3 id="gardenStageTitle">Sprout Roof</h3>
+              <p id="gardenStageBody">Clear easy matches, invite color back, and unlock your first planter shelf.</p>
+            </div>
+            <div class="badge" id="gardenCompletion">0%</div>
+          </div>
+          <div class="progress-card">
+            <div class="progress-copy">
+              <span>Rooftop glow-up</span>
+              <strong id="gardenProgressText">0 / 60 bloom points</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="gardenProgressFill"></div>
+            </div>
+          </div>
+          <div class="collection-grid" id="collectionGrid"></div>
+        </article>
+
+        <article class="panel" data-panel="events">
+          <div class="panel-card">
+            <p class="section-label">Weekend Event</p>
+            <h3 id="eventTitle">Moonlight Bloom Festival</h3>
+            <p id="eventBody">Fill lantern jars by matching water and bloom tiles to unlock a glowing fern skin.</p>
+          </div>
+          <div class="progress-card">
+            <div class="progress-copy">
+              <span>Festival meter</span>
+              <strong id="eventProgressText">0 / 120 lantern points</strong>
+            </div>
+            <div class="progress-track lavender">
+              <div class="progress-fill lavender" id="eventProgressFill"></div>
+            </div>
+          </div>
+          <div class="small-cards" id="eventCards"></div>
+        </article>
+
+        <article class="panel" data-panel="club">
+          <div class="panel-card">
+            <p class="section-label">Club</p>
+            <h3 id="clubTitle">Skyline Sprouts</h3>
+            <p id="clubBody">Contribute bouquet badges from every win to open a shared rooftop chest.</p>
+          </div>
+          <div class="progress-card">
+            <div class="progress-copy">
+              <span>Club chest</span>
+              <strong id="clubProgressText">0 / 180 bouquet badges</strong>
+            </div>
+            <div class="progress-track mint">
+              <div class="progress-fill mint" id="clubProgressFill"></div>
+            </div>
+          </div>
+          <div class="small-cards" id="clubCards"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div id="overlay" class="overlay hidden" aria-live="polite">
+    <div class="overlay-card">
+      <p class="section-label" id="overlayKicker">Welcome back</p>
+      <h2 id="overlayTitle">Daily bloom bundle</h2>
+      <p id="overlayBody">You picked up petals, boosters, and a fresh reason to keep restoring.</p>
+      <div id="overlayRewards" class="overlay-rewards"></div>
+      <button id="overlayButton" class="primary-button" type="button">Collect</button>
+    </div>
+  </div>
+
+  <script src="./game.js"></script>
+</body>
+</html>
