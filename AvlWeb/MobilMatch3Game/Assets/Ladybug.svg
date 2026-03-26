@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="ladybugShell" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffae8f"/>
+      <stop offset="52%" stop-color="#f26347"/>
+      <stop offset="100%" stop-color="#c93f27"/>
+    </linearGradient>
+    <filter id="ladybugShadow" x="-35%" y="-35%" width="170%" height="190%">
+      <feDropShadow dx="0" dy="11" stdDeviation="8" flood-color="#3d180f" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <g filter="url(#ladybugShadow)" stroke="#2d241d" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M128 58c45 0 72 35 72 82s-27 69-72 69-72-22-72-69 27-82 72-82Z" fill="url(#ladybugShell)"/>
+    <path d="M128 58v151" fill="none"/>
+    <path d="M104 50c6-13 14-23 24-30" fill="none"/>
+    <path d="M152 50c-6-13-14-23-24-30" fill="none"/>
+    <ellipse cx="111" cy="105" rx="10" ry="13" fill="#1f1714" stroke="none"/>
+    <ellipse cx="146" cy="105" rx="10" ry="13" fill="#1f1714" stroke="none"/>
+    <ellipse cx="101" cy="150" rx="11" ry="14" fill="#1f1714" stroke="none"/>
+    <ellipse cx="155" cy="150" rx="11" ry="14" fill="#1f1714" stroke="none"/>
+    <path d="M103 170l-10 20" fill="none"/>
+    <path d="M153 170l10 20" fill="none"/>
+    <path d="M93 129l-18 8" fill="none"/>
+    <path d="M163 129l18 8" fill="none"/>
+    <ellipse cx="114" cy="89" rx="12" ry="25" fill="#ffffff" opacity=".25" stroke="none" transform="rotate(18 114 89)"/>
+    <ellipse cx="137" cy="82" rx="8" ry="14" fill="#ffffff" opacity=".16" stroke="none" transform="rotate(12 137 82)"/>
+  </g>
+</svg>

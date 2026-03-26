@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="sunHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff5bf" stop-opacity=".9"/>
+      <stop offset="100%" stop-color="#ffdc6a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunCore" cx="38%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="#fff8ca"/>
+      <stop offset="50%" stop-color="#ffd75b"/>
+      <stop offset="100%" stop-color="#efab1f"/>
+    </radialGradient>
+    <linearGradient id="sunRay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe68f"/>
+      <stop offset="100%" stop-color="#f0a61d"/>
+    </linearGradient>
+    <filter id="sunShadow" x="-50%" y="-50%" width="200%" height="210%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#8c5610" flood-opacity=".26"/>
+    </filter>
+  </defs>
+  <g filter="url(#sunShadow)">
+    <circle cx="128" cy="128" r="78" fill="url(#sunHalo)"/>
+    <g fill="url(#sunRay)" stroke="#c78312" stroke-width="8" stroke-linejoin="round">
+      <path d="M128 24l17 34h-34Z"/>
+      <path d="M191 45l7 36-30-16Z"/>
+      <path d="M226 96l-8 36-25-22Z"/>
+      <path d="M226 160l-33 8 25-22Z"/>
+      <path d="M191 211l-30-20 37-2Z"/>
+      <path d="M128 232l-17-34h34Z"/>
+      <path d="M65 211l-7-36 30 16Z"/>
+      <path d="M30 160l8-36 25 22Z"/>
+      <path d="M30 96l33-8-25 22Z"/>
+      <path d="M65 45l30 20-37 2Z"/>
+    </g>
+    <circle cx="128" cy="128" r="54" fill="url(#sunCore)" stroke="#c98312" stroke-width="9"/>
+    <circle cx="128" cy="128" r="42" fill="none" stroke="#ffe89a" stroke-width="6" opacity=".75"/>
+    <path d="M102 104c10-10 24-15 42-15" fill="none" stroke="#fff5ca" stroke-width="11" stroke-linecap="round"/>
+    <ellipse cx="112" cy="101" rx="13" ry="19" fill="#ffffff" opacity=".28" transform="rotate(15 112 101)"/>
+  </g>
+</svg>

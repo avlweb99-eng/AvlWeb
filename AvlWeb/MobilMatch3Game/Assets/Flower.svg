@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="flowerPetal" cx="42%" cy="34%" r="75%">
+      <stop offset="0%" stop-color="#ffc3e1"/>
+      <stop offset="56%" stop-color="#f173b2"/>
+      <stop offset="100%" stop-color="#bf4b86"/>
+    </radialGradient>
+    <radialGradient id="flowerCore" cx="42%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#fffef6"/>
+      <stop offset="58%" stop-color="#ffe98c"/>
+      <stop offset="100%" stop-color="#f2bf45"/>
+    </radialGradient>
+    <filter id="flowerShadow" x="-35%" y="-35%" width="170%" height="190%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#762f51" flood-opacity=".25"/>
+    </filter>
+  </defs>
+  <g filter="url(#flowerShadow)" stroke="#8f3664" stroke-width="8" stroke-linejoin="round">
+    <ellipse cx="128" cy="74" rx="38" ry="47" fill="url(#flowerPetal)"/>
+    <ellipse cx="177" cy="110" rx="38" ry="47" fill="url(#flowerPetal)" transform="rotate(45 177 110)"/>
+    <ellipse cx="159" cy="168" rx="38" ry="47" fill="url(#flowerPetal)" transform="rotate(96 159 168)"/>
+    <ellipse cx="97" cy="168" rx="38" ry="47" fill="url(#flowerPetal)" transform="rotate(142 97 168)"/>
+    <ellipse cx="79" cy="110" rx="38" ry="47" fill="url(#flowerPetal)" transform="rotate(-44 79 110)"/>
+    <path d="M109 53c9-4 19-4 29 0" fill="none" stroke="#ffd7ea" stroke-width="7" stroke-linecap="round" opacity=".85"/>
+    <circle cx="128" cy="128" r="27" fill="url(#flowerCore)"/>
+    <circle cx="121" cy="118" r="8" fill="#ffffff" opacity=".7" stroke="none"/>
+  </g>
+</svg>
