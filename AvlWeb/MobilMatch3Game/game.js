@@ -1059,19 +1059,26 @@ function handleCanvasInput(clientX, clientY) {
   }
 }
 
-canvas.addEventListener("pointerdown", (event) => {
-  handleCanvasInput(event.clientX, event.clientY);
-});
+if (window.PointerEvent) {
+  canvas.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    event.preventDefault();
+    handleCanvasInput(event.clientX, event.clientY);
+  });
+} else {
+  canvas.addEventListener("mousedown", (event) => {
+    if (event.button !== 0) return;
+    handleCanvasInput(event.clientX, event.clientY);
+  });
 
-canvas.addEventListener("mousedown", (event) => {
-  handleCanvasInput(event.clientX, event.clientY);
-});
-
-canvas.addEventListener("touchstart", (event) => {
-  const touch = event.touches[0];
-  if (!touch) return;
-  handleCanvasInput(touch.clientX, touch.clientY);
-});
+  canvas.addEventListener("touchstart", (event) => {
+    const touch = event.touches[0];
+    if (!touch) return;
+    event.preventDefault();
+    handleCanvasInput(touch.clientX, touch.clientY);
+  }, { passive: false });
+}
 
 ui.overlayButton.addEventListener("click", () => {
   ui.overlay.classList.add("hidden");
