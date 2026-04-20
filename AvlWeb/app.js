@@ -1,4 +1,5 @@
 const projectGrid = document.querySelector("#project-grid");
+const catalogHeading = document.querySelector("[data-catalog-heading]");
 const footerYear = document.querySelector("[data-current-year]");
 const mobileProjectMedia = window.matchMedia("(max-width: 760px)");
 
@@ -18,9 +19,32 @@ const placeholderSVG = encodeURIComponent(`
   </svg>
 `);
 
+const catalogDefinitions = {
+  projects: {
+    heading: "Games",
+    itemName: "project",
+    loadingMessage: "Loading released projects...",
+    loadErrorMessage: "Released projects could not be loaded from siteConfig.xml.",
+    emptyMessage: "No released projects were found in siteConfig.xml.",
+    emptyMobileMessage: "No released projects are marked for smaller screens.",
+  },
+  plugins: {
+    heading: "Plug-Ins",
+    itemName: "plug-in",
+    loadingMessage: "Loading plug-ins...",
+    loadErrorMessage: "Plug-ins could not be loaded from siteConfig.xml.",
+    emptyMessage: "No plug-ins were found in siteConfig.xml.",
+    emptyMobileMessage: "No plug-ins are marked for smaller screens.",
+  },
+};
+
 const state = {
-  projects: [],
+  catalogs: {
+    projects: [],
+    plugins: [],
+  },
   loaded: false,
+  activeCatalog: "projects",
 };
 
 function init() {
@@ -28,17 +52,35 @@ function init() {
     footerYear.textContent = String(new Date().getFullYear());
   }
 
-  loadProjects();
+  syncCatalogWithHash();
+  loadCatalogs();
+
+  window.addEventListener("hashchange", handleHashChange);
 
   if (typeof mobileProjectMedia.addEventListener === "function") {
-    mobileProjectMedia.addEventListener("change", renderProjects);
+    mobileProjectMedia.addEventListener("change", renderCatalog);
   } else if (typeof mobileProjectMedia.addListener === "function") {
-    mobileProjectMedia.addListener(renderProjects);
+    mobileProjectMedia.addListener(renderCatalog);
   }
 }
 
-async function loadProjects() {
-  setGridMessage("Loading released projects...");
+function handleHashChange() {
+  syncCatalogWithHash();
+
+  if (!state.loaded) {
+    setGridMessage(getCatalogDefinition().loadingMessage);
+    return;
+  }
+
+  renderCatalog();
+}
+
+function syncCatalogWithHash() {
+  state.activeCatalog = /^#plugins$/i.test(window.location.hash) ? "plugins" : "projects";
+}
+
+async function loadCatalogs() {
+  setGridMessage(getCatalogDefinition().loadingMessage);
 
   try {
     const response = await fetch("siteConfig.xml", { cache: "no-store" });
@@ -47,87 +89,118 @@ async function loadProjects() {
     }
 
     const xmlText = await response.text();
-    state.projects = parseProjectConfig(xmlText);
+    state.catalogs = parseSiteConfig(xmlText);
     state.loaded = true;
-    renderProjects();
+    renderCatalog();
   } catch (error) {
-    console.error("Unable to load project config:", error);
-    setGridMessage("Released projects could not be loaded from siteConfig.xml.");
+    console.error("Unable to load site config:", error);
+    setGridMessage(getCatalogDefinition().loadErrorMessage);
   }
 }
 
-function parseProjectConfig(xmlText) {
+function parseSiteConfig(xmlText) {
   const xml = new DOMParser().parseFromString(xmlText, "application/xml");
-  const nodes = Array.from(xml.querySelectorAll("projects > project"));
+  const siteNode = xml.documentElement;
+  const projectsNode = getFirstNamedChild(siteNode, "projects");
+  const plugInsNode =
+    getFirstNamedChild(projectsNode, "plugins") ||
+    getFirstNamedChild(projectsNode, "plugIns") ||
+    getFirstNamedChild(siteNode, "plugins") ||
+    getFirstNamedChild(siteNode, "plugIns");
 
+  return {
+    projects: parseCatalogItems(getNamedChildren(projectsNode, "project"), "project"),
+    plugins: parseCatalogItems(Array.from(plugInsNode?.children || []), "plug-in"),
+  };
+}
+
+function parseCatalogItems(nodes, itemName) {
   return nodes
     .map((node, index) => ({
-      id: (node.getAttribute("id") || `project-${index + 1}`).trim(),
-      title: getNodeText(node, "labelTxt") || `Project ${index + 1}`,
-      description: getNodeText(node, "Description") || "Open this project.",
+      id: (node.getAttribute("id") || `${itemName}-${index + 1}`).trim(),
+      title: getNodeText(node, "labelTxt") || `${capitalizeLabel(itemName)} ${index + 1}`,
+      description: getNodeText(node, "Description") || `Open this ${itemName}.`,
       href: normalizeSitePath(getNodeText(node, "url") || "#"),
       thumbnail: normalizeSitePath(getNodeText(node, "thumbnailImage") || ""),
       okForMobile: /^yes$/i.test(getNodeText(node, "okforMobile") || ""),
     }))
-    .filter((project) => project.href && project.href !== "#");
+    .filter((item) => item.href && item.href !== "#");
+}
+
+function getCatalogDefinition() {
+  return catalogDefinitions[state.activeCatalog] || catalogDefinitions.projects;
 }
 
 function getNodeText(node, tagName) {
-  const child = Array.from(node.children).find(
-    (entry) => entry.tagName && entry.tagName.toLowerCase() === tagName.toLowerCase()
-  );
-
+  const child = getFirstNamedChild(node, tagName);
   return child ? child.textContent.trim() : "";
+}
+
+function getFirstNamedChild(node, tagName) {
+  return getNamedChildren(node, tagName)[0] || null;
+}
+
+function getNamedChildren(node, tagName) {
+  return Array.from(node?.children || []).filter(
+    (child) => child.tagName && child.tagName.toLowerCase() === tagName.toLowerCase()
+  );
 }
 
 function normalizeSitePath(value) {
   return value.replace(/\\/g, "/");
 }
 
-function getVisibleProjects() {
+function getVisibleCatalogItems() {
+  const activeItems = state.catalogs[state.activeCatalog] || [];
+
   if (!mobileProjectMedia.matches) {
-    return state.projects;
+    return activeItems;
   }
 
-  return state.projects.filter((project) => project.okForMobile);
+  return activeItems.filter((item) => item.okForMobile);
 }
 
-function renderProjects() {
+function renderCatalog() {
   if (!state.loaded) {
     return;
   }
 
-  const visibleProjects = getVisibleProjects();
+  const catalogDefinition = getCatalogDefinition();
+  const visibleItems = getVisibleCatalogItems();
 
-  if (!visibleProjects.length) {
+  if (catalogHeading) {
+    catalogHeading.textContent = catalogDefinition.heading;
+  }
+
+  if (!visibleItems.length) {
     const message = mobileProjectMedia.matches
-      ? "No released projects are marked for smaller screens."
-      : "No released projects were found in siteConfig.xml.";
+      ? catalogDefinition.emptyMobileMessage
+      : catalogDefinition.emptyMessage;
     setGridMessage(message);
     return;
   }
 
-  projectGrid.innerHTML = visibleProjects
+  projectGrid.innerHTML = visibleItems
     .map(
-      (project, index) => `
+      (item, index) => `
         <a
           class="project-card"
-          href="${escapeAttribute(project.href)}"
+          href="${escapeAttribute(item.href)}"
           style="animation-delay: ${index * 70}ms"
-          aria-label="Open ${escapeAttribute(project.title)}"
+          aria-label="Open ${escapeAttribute(item.title)}"
         >
           <div class="project-card__image-wrap" aria-hidden="true">
             <img
               class="project-card__image"
-              src="${escapeAttribute(project.thumbnail || placeholderImage())}"
+              src="${escapeAttribute(item.thumbnail || placeholderImage())}"
               alt=""
               loading="lazy"
               onerror="this.onerror=null;this.src='${placeholderImage()}'"
             />
           </div>
           <div class="project-card__body">
-            <h2 class="project-card__title">${escapeHtml(project.title)}</h2>
-            <p class="project-card__description">${escapeHtml(project.description)}</p>
+            <h2 class="project-card__title">${escapeHtml(item.title)}</h2>
+            <p class="project-card__description">${escapeHtml(item.description)}</p>
           </div>
         </a>
       `
@@ -141,6 +214,11 @@ function setGridMessage(message) {
 
 function placeholderImage() {
   return `data:image/svg+xml;charset=UTF-8,${placeholderSVG}`;
+}
+
+function capitalizeLabel(value) {
+  return String(value)
+    .replace(/(^|-)([a-z])/g, (_, separator, character) => `${separator}${character.toUpperCase()}`);
 }
 
 function escapeHtml(value) {
