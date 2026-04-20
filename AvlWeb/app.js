@@ -44,7 +44,7 @@ const state = {
     plugins: [],
   },
   loaded: false,
-  activeCatalog: "projects",
+  activeCatalog: "plugins",
 };
 
 function init() {
@@ -76,7 +76,7 @@ function handleHashChange() {
 }
 
 function syncCatalogWithHash() {
-  state.activeCatalog = /^#plugins$/i.test(window.location.hash) ? "plugins" : "projects";
+  state.activeCatalog = /^#games$/i.test(window.location.hash) ? "projects" : "plugins";
 }
 
 async function loadCatalogs() {
