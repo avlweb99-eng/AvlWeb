@@ -61,21 +61,25 @@
       gap: 16px;
     }
 
-    .plugin-video {
-      display: block;
-      width: 100%;
-      padding: 0;
-      margin: 0;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: #11141d;
-      box-shadow: none;
-    }
-
     .plugin-video-shell {
       padding: 14px;
       border: 1px solid rgba(53, 53, 63, 0.12);
       background: #1f2330;
       box-shadow: var(--shadow-soft);
+    }
+
+    .plugin-video-embed {
+      position: relative;
+      width: 100%;
+      padding-top: 59.87%;
+    }
+
+    .plugin-video-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
 
     @media (max-width: 640px) {
@@ -130,16 +134,15 @@
           <h2 class="section-title section-title--small" id="demo-title">ChordLab Demo</h2>
         </div>
         <div class="plugin-video-shell">
-          <video
-            class="plugin-video"
-            controls
-            preload="metadata"
-            playsinline
-            poster="../ChordLabDemo_V1.gif"
-          >
-            <source src="../ChordLabDemo_V1.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <div class="plugin-video-embed">
+            <iframe
+              class="plugin-video-frame"
+              src="https://player.vimeo.com/video/1184340206?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              title="Chord Lab demo"
+            ></iframe>
+          </div>
         </div>
       </section>
     </main>
@@ -150,5 +153,6 @@
   </div>
 
   <script type="module" src="../../app.js"></script>
+  <script src="https://player.vimeo.com/api/player.js"></script>
 </body>
 </html>
