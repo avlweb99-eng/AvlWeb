@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChordLab</title>
+  <link rel="stylesheet" href="../../styles.css" />
+  <style>
+    .plugin-landing {
+      display: grid;
+      gap: 24px;
+    }
+
+    .plugin-hero,
+    .plugin-demo {
+      padding: 24px;
+    }
+
+    .plugin-hero {
+      display: grid;
+      gap: 18px;
+    }
+
+    .plugin-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.55;
+      max-width: 62ch;
+    }
+
+    .plugin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .plugin-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 11px 16px;
+      border: 1px solid rgba(53, 53, 63, 0.15);
+      background: #1f2330;
+      color: #ffffff;
+      font: inherit;
+      box-shadow: 0 10px 16px rgba(31, 35, 48, 0.18);
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .plugin-link:hover,
+    .plugin-link:focus-visible {
+      transform: translateY(-1px);
+      background: #161a25;
+      outline: none;
+    }
+
+    .plugin-demo {
+      display: grid;
+      gap: 16px;
+    }
+
+    .plugin-video {
+      display: block;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #11141d;
+      box-shadow: none;
+    }
+
+    .plugin-video-shell {
+      padding: 14px;
+      border: 1px solid rgba(53, 53, 63, 0.12);
+      background: #1f2330;
+      box-shadow: var(--shadow-soft);
+    }
+
+    @media (max-width: 640px) {
+      .plugin-hero,
+      .plugin-demo {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell" id="top">
+    <header class="site-header" aria-label="Main header">
+      <a class="brand" href="../../index.html" aria-label="Games home">
+        <img
+          class="brand__logo"
+          src="../../Images/games-line-logo.svg"
+          alt=""
+          width="34"
+          height="34"
+        />
+        <span class="brand__wordmark">Games</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <a class="site-nav__link" href="../../index.html">Home</a>
+        <a class="site-nav__link" href="../../index.html#games">Games</a>
+        <a class="site-nav__link" href="../../index.html#games">Utilities</a>
+        <a class="site-nav__link" href="../../index.html#plugins" aria-current="page">PLUG-INS</a>
+      </nav>
+    </header>
+
+    <main class="page-main plugin-landing">
+      <section class="info-card plugin-hero" aria-labelledby="plugin-title">
+        <div>
+          <p class="section-kicker">PLUG-IN</p>
+          <h1 class="section-title" id="plugin-title">ChordLab</h1>
+        </div>
+        <p class="plugin-copy">
+          ChordLab is a music plug-in workspace for building, previewing, and refining
+          chord-driven ideas. Use the Object Diagram hub to explore the system model,
+          then watch the product demo below for a quick tour of the experience.
+        </p>
+        <div class="plugin-actions">
+          <a class="plugin-link" href="ObjectDiagram/Index.html">Open Object Diagram</a>
+        </div>
+      </section>
+
+      <section class="info-card plugin-demo" aria-labelledby="demo-title">
+        <div>
+          <p class="section-kicker">PRODUCT DEMO</p>
+          <h2 class="section-title section-title--small" id="demo-title">ChordLab Demo</h2>
+        </div>
+        <div class="plugin-video-shell">
+          <video
+            class="plugin-video"
+            controls
+            preload="metadata"
+            playsinline
+            poster="../ChordLabDemo_V1.gif"
+          >
+            <source src="../ChordLabDemo_V1.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <span>&copy; <span data-current-year></span> GameHub. All rights reserved.</span>
+    </footer>
+  </div>
+
+  <script type="module" src="../../app.js"></script>
+</body>
+</html>

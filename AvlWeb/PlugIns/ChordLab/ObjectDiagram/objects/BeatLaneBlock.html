@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chord Lab Beat Lane Block</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1014;
+            --panel: #10181e;
+            --panel-2: #142129;
+            --text: #e7eef0;
+            --muted: #9db0b8;
+            --line: #2b4049;
+            --accent: #69d5b2;
+            --accent-2: #89c7ff;
+            --warn: #f4c178;
+            --good: #82e39d;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(105, 213, 178, 0.12), transparent 26%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        main {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 28px 22px 54px;
+        }
+
+        h1, h2, h3 { margin: 0 0 12px; line-height: 1.14; }
+        h1 { font-size: 34px; letter-spacing: -0.02em; }
+        h2 { font-size: 23px; margin-top: 28px; }
+        h3 {
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        p { margin: 0 0 14px; }
+        a { color: var(--accent-2); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(105, 213, 178, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lede {
+            max-width: 920px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .callout {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border-left: 4px solid var(--warn);
+            background: rgba(244, 193, 120, 0.08);
+        }
+
+        .callout strong { color: var(--warn); }
+        .diagram { overflow-x: auto; margin-top: 12px; }
+        svg { width: 100%; min-width: 980px; height: auto; display: block; }
+
+        .card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .table-wrap { overflow-x: auto; margin-top: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 840px; }
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--accent-2);
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+        }
+
+        .muted { color: var(--muted); }
+        ul { margin: 0; padding-left: 20px; }
+        li + li { margin-top: 8px; }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            color: var(--accent);
+            font-size: 0.95em;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 1020px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            main { padding: 22px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="stamp">Object Detail</div>
+    <h1>Beat Lane Block</h1>
+    <p class="lede">
+        A Beat Lane Block is the atomic placed beat reference inside the Beat Lane.
+        It lives under Beat Lane arrangement state and points at a generated pattern asset while also carrying placement-specific timing and scope.
+        This object matters because it is the exact boundary where reusable pattern design becomes a real placed event in the workspace arrangement.
+    </p>
+
+    <div class="footer-links">
+        <a href="../Index.html">Back to Object Diagram Hub</a>
+        <a href="./BeatLane.html">Related: Beat Lane</a>
+        <a href="../mutations/BeatLaneMutations.html">Related: Beat Lane Mutations</a>
+        <a href="../contracts/UpdateContracts.html">Related: Update Contracts</a>
+    </div>
+
+    <section class="grid-2" style="margin-top: 20px;">
+        <div class="panel">
+            <h2>Definition</h2>
+            <p>
+                A Beat Lane Block is the placement object that sits on the Beat Lane timeline and references a Generated Pattern for musical content.
+                It carries arrangement-local information such as start position, extent, and asset reference, making it the concrete representation of a beat used in the workspace.
+                When the user places a pattern in the Beat Lane, drags it to another bar, resizes it, or double-clicks it for placed-beat editing, they are interacting with Beat Lane Block state.
+            </p>
+            <div class="chip-row">
+                <span class="chip">Atomic placement</span>
+                <span class="chip">Beat Lane-owned</span>
+                <span class="chip">Pattern reference</span>
+                <span class="chip">Arrangement-local timing</span>
+            </div>
+            <div class="callout" style="margin-top: 16px;">
+                <strong>Key distinction:</strong><br>
+                A Beat Lane Block is not the same as a Generated Pattern. The block is a placed reference with arrangement timing; the generated pattern is the reusable asset it points to.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>What This Object Is Not</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Is This Object</h3>
+                    <p>The specific placed beat instance the user can move, resize, select, and open from the Beat Lane timeline.</p>
+                </div>
+                <div class="card">
+                    <h3>Not This Object</h3>
+                    <p>The Beat Lane container as a whole or the shared Generated Pattern asset. It is the per-placement object under the lane.</p>
+                </div>
+                <div class="card">
+                    <h3>Boundary Case</h3>
+                    <p>Opening a Beat Lane Block in the Pattern Generator may expose the shared generated pattern for editing, but the block still remains the arrangement-specific context that defines when that pattern is actually used.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Beat Lane Block Diagram</h2>
+        <p class="muted">Beat Lane Block sits between Beat Lane arrangement truth and the reusable pattern asset, while also serving as the placed-beat editing target for arrangement-following sessions.</p>
+        <div class="diagram">
+            <svg viewBox="0 0 1180 520" role="img" aria-label="Beat Lane Block relationships">
+                <rect x="34" y="36" width="290" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="442" y="36" width="300" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="860" y="36" width="286" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+
+                <text x="54" y="70" fill="#69d5b2" font-size="21" font-weight="700">Upstream</text>
+                <text x="462" y="70" fill="#89c7ff" font-size="21" font-weight="700">Beat Lane Block</text>
+                <text x="880" y="70" fill="#82e39d" font-size="21" font-weight="700">Downstream</text>
+
+                <text x="72" y="132" fill="#e7eef0" font-size="16" font-weight="700">Beat Lane</text>
+                <text x="72" y="154" fill="#9db0b8" font-size="13">Owns the block as part of placed beat arrangement truth</text>
+                <text x="72" y="220" fill="#e7eef0" font-size="16" font-weight="700">Generated Pattern</text>
+                <text x="72" y="242" fill="#9db0b8" font-size="13">Provides the reusable beat content referenced by the block</text>
+
+                <text x="480" y="132" fill="#e7eef0" font-size="16" font-weight="700">Owns placement-specific beat use</text>
+                <text x="480" y="154" fill="#9db0b8" font-size="13">Combines an asset reference with concrete arrangement timing</text>
+                <text x="480" y="220" fill="#e7eef0" font-size="16" font-weight="700">Defines local edit context</text>
+                <text x="480" y="242" fill="#9db0b8" font-size="13">Placed-beat sessions and block selection target this object directly</text>
+
+                <text x="882" y="132" fill="#e7eef0" font-size="16" font-weight="700">Beat Lane View</text>
+                <text x="882" y="154" fill="#9db0b8" font-size="13">Presents, selects, drags, and resizes the placed block in the timeline</text>
+                <text x="882" y="220" fill="#e7eef0" font-size="16" font-weight="700">Pattern Generator session</text>
+                <text x="882" y="242" fill="#9db0b8" font-size="13">Placed-beat mode uses the block to resolve arrangement-following behavior</text>
+                <text x="882" y="308" fill="#e7eef0" font-size="16" font-weight="700">Playback / cursor consumers</text>
+                <text x="882" y="330" fill="#9db0b8" font-size="13">Arrangement playback and cursors care about the block's timing, not just the shared asset</text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Core Responsibilities</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Responsibility</th>
+                        <th>Meaning</th>
+                        <th>What It Owns</th>
+                        <th>What It Does Not Own</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Placed asset reference</td>
+                        <td>Represents one concrete use of a generated pattern in the arrangement</td>
+                        <td>Reference to a generated pattern and placement-local identity</td>
+                        <td>The pattern asset's internal step content</td>
+                        <td>This is where shared asset state becomes actual timeline use.</td>
+                    </tr>
+                    <tr>
+                        <td>Arrangement-local timing</td>
+                        <td>Determines where and for how long the placed beat exists in musical time</td>
+                        <td>Start beat, local extent, and placement window</td>
+                        <td>Global transport authority or standalone design-loop behavior</td>
+                        <td>Placed-beat cursor behavior depends on this object, not only on the generated pattern length.</td>
+                    </tr>
+                    <tr>
+                        <td>Placed-beat edit context</td>
+                        <td>Provides the concrete object selected or opened when editing a beat from the arrangement</td>
+                        <td>Block identity and arrangement context</td>
+                        <td>Session-local UI state or the full Beat Lane container</td>
+                        <td>This is the bridge object between Beat Lane arrangement truth and Pattern Generator placed-beat mode.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Relationships In Chord Lab</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Related Object</th>
+                        <th>Relationship</th>
+                        <th>Direction</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Beat Lane</td>
+                        <td>The block is owned by Beat Lane as one atomic placed reference</td>
+                        <td>Upstream</td>
+                        <td>Beat Lane provides the containing arrangement truth.</td>
+                    </tr>
+                    <tr>
+                        <td>Generated Pattern</td>
+                        <td>The block points at a generated pattern for reusable beat content</td>
+                        <td>Peer / referenced object</td>
+                        <td>This is the main separation between placement truth and shared asset truth.</td>
+                    </tr>
+                    <tr>
+                        <td>Beat Lane View</td>
+                        <td>Visualizes and manipulates the block in the arrangement UI</td>
+                        <td>Downstream consumer</td>
+                        <td>Selection, drag, and resize interactions happen here, but the object remains model truth.</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern Generator session</td>
+                        <td>Placed-beat mode uses the block identity and timing to determine real playback-window behavior</td>
+                        <td>Downstream consumer</td>
+                        <td>The session may edit the shared asset, but it uses the block to know where that asset is placed.</td>
+                    </tr>
+                    <tr>
+                        <td>Playback engine</td>
+                        <td>Arrangement playback uses the block's timing window to know when beat content should be active</td>
+                        <td>Downstream consumer</td>
+                        <td>This is one of the reasons Beat Lane block truth must propagate cleanly and immediately.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Mutation Touch Points</h2>
+            <ul>
+                <li>Beat Lane mutations add, move, resize, retarget, and delete Beat Lane Blocks as placement objects under the lane.</li>
+                <li>Selection mutations can target a Beat Lane Block directly, making it the current arrangement edit target without changing the shared pattern asset.</li>
+                <li>Generated pattern mutations can change what a Beat Lane Block sounds like indirectly because the block references shared pattern content.</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h2>Design Tensions / Failure Modes</h2>
+            <ul>
+                <li>If Beat Lane Block timing changes do not fully propagate, arrangement-following cursor and playback behavior can look stale until a later stronger refresh repairs them.</li>
+                <li>The same placed block can imply both arrangement-local truth and shared-asset editing, which makes boundaries blurry if contracts are not explicit.</li>
+                <li>Because the block is the point where reuse meets placement, weak ownership rules here can make Pattern Generator interactions feel especially fragile.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Related Pages / Next Pages</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3><a href="./GeneratedPattern.html">Generated Pattern</a></h3>
+                <p>Read this next to document the reusable beat asset that the placed block references.</p>
+            </div>
+            <div class="card">
+                <h3><a href="./PatternGeneratorSession.html">Pattern Generator Session</a></h3>
+                <p>Read this next to separate the placed-beat editing context from the local tool state that presents it.</p>
+            </div>
+            <div class="card">
+                <h3><a href="../mutations/BeatLaneMutations.html">Beat Lane Mutations</a></h3>
+                <p>Read this next to connect the block's arrangement truth to the mutation/update contracts that should keep placement behavior correct.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

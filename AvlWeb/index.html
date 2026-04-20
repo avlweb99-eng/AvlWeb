@@ -24,12 +24,14 @@
         <a class="site-nav__link" href="index.html">Home</a>
         <a class="site-nav__link" href="index.html#games">Games</a>
         <a class="site-nav__link" href="index.html#games">Utilities</a>
+        <a class="site-nav__link" href="index.html#plugins">PLUG-INS</a>
       </nav>
     </header>
 
     <main class="page-main">
+      <div id="plugins" aria-hidden="true"></div>
       <section class="catalog" id="games" aria-labelledby="catalog-heading">
-        <h1 class="visually-hidden" id="catalog-heading">Games</h1>
+        <h1 class="visually-hidden" id="catalog-heading" data-catalog-heading>Games</h1>
         <div class="catalog__grid" id="project-grid" aria-live="polite"></div>
       </section>
     </main>

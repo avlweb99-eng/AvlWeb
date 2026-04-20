@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chord Lab Update Contracts</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1014;
+            --panel: #10181e;
+            --panel-2: #142129;
+            --text: #e7eef0;
+            --muted: #9db0b8;
+            --line: #2b4049;
+            --accent: #69d5b2;
+            --accent-2: #89c7ff;
+            --warn: #f4c178;
+            --good: #82e39d;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(105, 213, 178, 0.12), transparent 26%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        main {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 28px 22px 54px;
+        }
+
+        h1, h2, h3 { margin: 0 0 12px; line-height: 1.14; }
+        h1 { font-size: 34px; letter-spacing: -0.02em; }
+        h2 { font-size: 23px; margin-top: 28px; }
+        h3 {
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        p { margin: 0 0 14px; }
+        a { color: var(--accent-2); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(105, 213, 178, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lede { max-width: 920px; color: var(--muted); font-size: 16px; }
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+        .chip-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        .chip {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .callout {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border-left: 4px solid var(--warn);
+            background: rgba(244, 193, 120, 0.08);
+        }
+
+        .callout strong { color: var(--warn); }
+        .diagram { overflow-x: auto; margin-top: 12px; }
+        svg { width: 100%; min-width: 980px; height: auto; display: block; }
+        .card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .table-wrap { overflow-x: auto; margin-top: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 840px; }
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--accent-2);
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+        }
+
+        .muted { color: var(--muted); }
+        ul { margin: 0; padding-left: 20px; }
+        li + li { margin-top: 8px; }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            color: var(--accent);
+            font-size: 0.95em;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 1020px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            main { padding: 22px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="stamp">Contract Detail</div>
+    <h1>Update Contracts</h1>
+    <p class="lede">
+        Update contracts define what must happen after a mutation changes state.
+        They translate a mutation into explicit invalidations, consumers, and non-consumers so the system becomes correct immediately and predictably.
+        This contract matters because Chord Lab has already shown the cost of weak update rules: stale views, "repair refreshes," heavy generic refreshes, and UI behavior that feels brittle.
+    </p>
+
+    <div class="footer-links">
+        <a href="../Index.html">Back to Object Diagram Hub</a>
+        <a href="../mutations/SelectionMutations.html">Related: Selection Mutations</a>
+        <a href="../mutations/TransportMutations.html">Related: Transport Mutations</a>
+        <a href="./EditorRefreshDomains.html">Related: Editor Refresh Domains</a>
+    </div>
+
+    <section class="grid-2" style="margin-top: 20px;">
+        <div class="panel">
+            <h2>Definition</h2>
+            <p>
+                An update contract is the explicit rule set that says what a mutation invalidates, which consumers must refresh, and which parts of the app must stay untouched.
+                In Chord Lab, update contracts sit between mutation types and concrete UI/playback behavior.
+                A good contract keeps correctness deterministic and cost scoped.
+            </p>
+            <div class="chip-row">
+                <span class="chip">Mutation-driven</span>
+                <span class="chip">Consumer-aware</span>
+                <span class="chip">Scope-limited</span>
+                <span class="chip">Correctness-first</span>
+            </div>
+            <div class="callout" style="margin-top: 16px;">
+                <strong>Key distinction:</strong><br>
+                A mutation describes what changed. An update contract describes what the rest of the system must do because that change happened.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>What This Is Not</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Is Update Contract</h3>
+                    <p>"Editing a chord value must refresh the chord inspector, chord roll visuals, and relevant playback caches, but must not trigger a broad editor relayout."</p>
+                </div>
+                <div class="card">
+                    <h3>Not Update Contract</h3>
+                    <p>"Click the chord inspector slider to change velocity." That is a UI instruction, not the contract that follows from the change.</p>
+                </div>
+                <div class="card">
+                    <h3>Boundary Case</h3>
+                    <p>"Send a generic change message and let everything refresh" is a fallback mechanism, not a good update contract, even if the code still does it today.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Update Contract Diagram</h2>
+        <p class="muted">A mutation changes state, the contract classifies the consequences, and only the declared consumers respond.</p>
+        <div class="diagram">
+            <svg viewBox="0 0 1180 520" role="img" aria-label="Update contract flow">
+                <rect x="34" y="36" width="290" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="442" y="36" width="300" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="860" y="36" width="286" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <text x="54" y="70" fill="#69d5b2" font-size="21" font-weight="700">Mutations</text>
+                <text x="462" y="70" fill="#89c7ff" font-size="21" font-weight="700">Update Contract</text>
+                <text x="880" y="70" fill="#82e39d" font-size="21" font-weight="700">Consumers</text>
+                <text x="72" y="132" fill="#e7eef0" font-size="16" font-weight="700">Selection, value, Beat Lane,</text>
+                <text x="72" y="154" fill="#9db0b8" font-size="13">generated pattern, transport, session, layout</text>
+                <text x="480" y="132" fill="#e7eef0" font-size="16" font-weight="700">Classify consequences</text>
+                <text x="480" y="154" fill="#9db0b8" font-size="13">Emit explicit invalidations and prevent generic fallout</text>
+                <text x="882" y="132" fill="#e7eef0" font-size="16" font-weight="700">Editor domains, playback engine,</text>
+                <text x="882" y="154" fill="#9db0b8" font-size="13">tool sessions, undo/publish policy</text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Examples</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Good Selection Contract</h3>
+                    <p>Selecting a chord updates inspectors and selection visuals, but does not rebuild Beat Lane model state or trigger a broad relayout.</p>
+                </div>
+                <div class="card">
+                    <h3>Scoped Pattern Contract</h3>
+                    <p>Editing a generated pattern step updates the pattern grid, preview, and any Beat Lane blocks that reference that pattern, but does not force a full project publish.</p>
+                </div>
+                <div class="card">
+                    <h3>Authority Contract</h3>
+                    <p>When the host starts playing, transport UI, playback authority, and cursors switch to host-following immediately while internal controls disable.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Non-Examples</h2>
+            <ul>
+                <li>"Call <code>refreshFromProcessor()</code> and let everything figure itself out"
+                    <span class="muted">This is a fallback mechanism, not a clear contract.</span>
+                </li>
+                <li>"The UI looks correct after I move a Beat Lane block"
+                    <span class="muted">That may reveal a strong contract path, but it is not the contract itself.</span>
+                </li>
+                <li>"The timer repaints every 30 ms"
+                    <span class="muted">That is runtime behavior, not a mutation-to-consumer rule.</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Core Update Contract Rules</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rule</th>
+                        <th>Meaning</th>
+                        <th>Applies To</th>
+                        <th>Must Prevent</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mutations must classify their consequences</td>
+                        <td>Every state change should translate into a small explicit invalidation set.</td>
+                        <td>All mutation families</td>
+                        <td>Guesswork and accidental repair refreshes</td>
+                        <td>This is the main design pivot away from generic refresh behavior.</td>
+                    </tr>
+                    <tr>
+                        <td>Only declared consumers should react</td>
+                        <td>A mutation should refresh only the surfaces that actually depend on the changed state.</td>
+                        <td>Editor domains, tool sessions, playback engine</td>
+                        <td>Full-window churn and brittle lag</td>
+                        <td>This is the contract side of the refresh-domain work already started in the editor.</td>
+                    </tr>
+                    <tr>
+                        <td>Non-consumers must stay idle</td>
+                        <td>If a surface does not depend on the mutation, it should not update just because a change happened elsewhere.</td>
+                        <td>All UI and playback consumers</td>
+                        <td>Broad refreshes, repaints, and hidden semantic coupling</td>
+                        <td>This rule is especially important for layout, selection, and high-frequency pattern edits.</td>
+                    </tr>
+                    <tr>
+                        <td>Heavy paths must be intentional</td>
+                        <td>Undo, publish, or playback-reset behavior should happen only when the mutation actually warrants it.</td>
+                        <td>Value, Beat Lane, generated pattern, transport mutations</td>
+                        <td>Laggy interaction and "hope it doesn't glitch" feeling</td>
+                        <td>This is where lightweight pattern-library edits and heavier arrangement changes must stay distinct.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Chord Lab Contract Surfaces</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Surface</th>
+                        <th>Role In Contract</th>
+                        <th>What It Consumes</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Processor mutation entry points</td>
+                        <td>Mutation origin and contract emitter</td>
+                        <td>Mutation intent and authoritative state changes</td>
+                        <td>This is where explicit invalidation types should ultimately originate.</td>
+                    </tr>
+                    <tr>
+                        <td>Editor refresh domains</td>
+                        <td>Scoped UI consumers</td>
+                        <td>Only the invalidations relevant to each editor section</td>
+                        <td>Main editor responsiveness depends heavily on getting this boundary right.</td>
+                    </tr>
+                    <tr>
+                        <td>Playback engine</td>
+                        <td>Time-domain and sound-domain consumer</td>
+                        <td>Transport, arrangement, Beat Lane, generated pattern, and preview invalidations that affect audio or cursors</td>
+                        <td>Playback authority and preview isolation should be defined by contract, not accident.</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern Generator session</td>
+                        <td>Local tool consumer</td>
+                        <td>Selection, session, generated pattern, and some transport/layout invalidations</td>
+                        <td>This is the clearest place where local session state must stay distinct from shared model state.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Design Tensions / Failure Modes</h2>
+            <ul>
+                <li>Weak contracts often show up as "the UI becomes correct only after some other stronger action," which means a mutation path is not fully declaring its consequences.</li>
+                <li>Generic refresh systems are easy to wire initially, but they quickly make Chord Lab feel expensive, fragile, and unpredictable under frequent edits.</li>
+                <li>Transport, Pattern Generator, and Beat Lane are the most contract-sensitive areas because they sit at the intersection of model truth, local session behavior, and playback authority.</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h2>Open Questions</h2>
+            <ul>
+                <li>Should Chord Lab define one shared invalidation type system across processor, editor, playback, and tools, or several small contract enums that map to each other?</li>
+                <li>Which existing processor mutation entry points already behave like strong contracts and can be formalized instead of reinvented?</li>
+                <li>How should undo/publish policy be represented in the contracts docs so it stays connected to responsiveness goals?</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Related Pages / Next Pages</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>Transport Authority</h3>
+                <p>Read this next to formalize the host-vs-internal rules that already matter throughout the app.</p>
+            </div>
+            <div class="card">
+                <h3>Editor Refresh Domains</h3>
+                <p>Read this next to connect mutation contracts directly to the scoped editor refresh work already underway.</p>
+            </div>
+            <div class="card">
+                <h3>Preview vs Transport</h3>
+                <p>Read this next to separate local audition and preview layers from true transport authority.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

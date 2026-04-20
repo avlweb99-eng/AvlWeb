@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chord Lab Object Diagram</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1014;
+            --panel: #10181e;
+            --panel-2: #142129;
+            --text: #e7eef0;
+            --muted: #9db0b8;
+            --line: #2b4049;
+            --accent: #69d5b2;
+            --accent-2: #89c7ff;
+            --warn: #f4c178;
+            --good: #82e39d;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(105, 213, 178, 0.12), transparent 28%),
+                radial-gradient(circle at top right, rgba(137, 199, 255, 0.10), transparent 24%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.45;
+        }
+
+        main {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 30px 24px 56px;
+        }
+
+        h1, h2, h3 {
+            margin: 0 0 12px;
+            line-height: 1.12;
+        }
+
+        h1 {
+            font-size: 36px;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            font-size: 17px;
+            color: var(--accent);
+        }
+
+        p {
+            margin: 0 0 14px;
+        }
+
+        a {
+            color: var(--accent-2);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .lede {
+            max-width: 920px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(105, 213, 178, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+        }
+
+        .hero-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .hero-list div {
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+        }
+
+        .hero-list strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .hero-list span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .diagram {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        svg {
+            width: 100%;
+            min-width: 980px;
+            height: auto;
+            display: block;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 16px;
+        }
+
+        .section-card {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--panel);
+            overflow: hidden;
+        }
+
+        .section-card header {
+            padding: 16px 18px 14px;
+            border-bottom: 1px solid var(--line);
+            background: var(--panel-2);
+        }
+
+        .section-card header p {
+            color: var(--muted);
+            margin: 6px 0 0;
+            font-size: 14px;
+        }
+
+        .section-card .content {
+            padding: 16px 18px 18px;
+        }
+
+        .link-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .link-item {
+            padding: 12px 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .link-item strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .link-item span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .columns-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .note {
+            padding: 14px;
+            border-radius: 14px;
+            border-left: 4px solid var(--warn);
+            background: rgba(244, 193, 120, 0.07);
+            color: var(--text);
+        }
+
+        .note strong {
+            color: var(--warn);
+        }
+
+        .quickstart {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .quickstart a {
+            display: block;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            min-height: 120px;
+        }
+
+        .quickstart strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .quickstart span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            color: var(--accent);
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 1040px) {
+            .hero,
+            .section-grid,
+            .columns-3,
+            .quickstart {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 22px 16px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="stamp">Object Diagram Hub</div>
+    <h1>Chord Lab Design Map</h1>
+    <p class="lede">
+        This is the navigation hub for the Chord Lab object diagram and related behavior docs.
+        It is meant to make the system easy to understand from multiple angles: what the main objects are,
+        what kinds of mutations exist, what update contracts tie the app together, and how the most important
+        user-facing flows move through the system.
+    </p>
+
+    <section class="hero">
+        <div class="panel">
+            <h2>How To Use This Map</h2>
+            <div class="hero-list">
+                <div>
+                    <strong>Start with Objects</strong>
+                    <span>Use this when you want to understand what exists in the Chord Lab system and how core entities relate to each other.</span>
+                </div>
+                <div>
+                    <strong>Use Mutations for Behavior</strong>
+                    <span>Use this when you want to understand what happens when a user clicks, edits, drags, plays, selects, or opens a tool.</span>
+                </div>
+                <div>
+                    <strong>Use Update Contracts for Correctness</strong>
+                    <span>Use this when you want to know what must refresh, what must not refresh, and where stale state or repair refreshes can hide.</span>
+                </div>
+                <div>
+                    <strong>Use Flows for Real UX Scenarios</strong>
+                    <span>Use this when you want to trace a complete end-to-end behavior such as editing a chord, moving a beat, or running internal transport.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>At A Glance</h2>
+            <div class="diagram">
+                <svg viewBox="0 0 920 460" role="img" aria-label="High-level Chord Lab documentation map">
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#89c7ff"></path>
+                        </marker>
+                    </defs>
+
+                    <rect x="320" y="24" width="280" height="78" rx="18" fill="#15302b" stroke="#69d5b2" stroke-width="2"/>
+                    <text x="460" y="57" text-anchor="middle" fill="#e7eef0" font-size="24" font-weight="700">Chord Lab</text>
+                    <text x="460" y="80" text-anchor="middle" fill="#9db0b8" font-size="14">Objects, mutations, contracts, flows</text>
+
+                    <rect x="42" y="154" width="190" height="88" rx="16" fill="#162331" stroke="#89c7ff"/>
+                    <text x="137" y="188" text-anchor="middle" fill="#e7eef0" font-size="18" font-weight="700">Objects</text>
+                    <text x="137" y="210" text-anchor="middle" fill="#9db0b8" font-size="13">Project, Workspace, Beat Lane,</text>
+                    <text x="137" y="228" text-anchor="middle" fill="#9db0b8" font-size="13">Generated Pattern, Playback Engine</text>
+
+                    <rect x="258" y="154" width="190" height="88" rx="16" fill="#162331" stroke="#89c7ff"/>
+                    <text x="353" y="188" text-anchor="middle" fill="#e7eef0" font-size="18" font-weight="700">Mutations</text>
+                    <text x="353" y="210" text-anchor="middle" fill="#9db0b8" font-size="13">Selection, value, transport,</text>
+                    <text x="353" y="228" text-anchor="middle" fill="#9db0b8" font-size="13">session, layout</text>
+
+                    <rect x="474" y="154" width="190" height="88" rx="16" fill="#162331" stroke="#89c7ff"/>
+                    <text x="569" y="188" text-anchor="middle" fill="#e7eef0" font-size="18" font-weight="700">Contracts</text>
+                    <text x="569" y="210" text-anchor="middle" fill="#9db0b8" font-size="13">Invalidations, consumers,</text>
+                    <text x="569" y="228" text-anchor="middle" fill="#9db0b8" font-size="13">must update / must not update</text>
+
+                    <rect x="690" y="154" width="190" height="88" rx="16" fill="#162331" stroke="#89c7ff"/>
+                    <text x="785" y="188" text-anchor="middle" fill="#e7eef0" font-size="18" font-weight="700">Flows</text>
+                    <text x="785" y="210" text-anchor="middle" fill="#9db0b8" font-size="13">Edit chord, move beat,</text>
+                    <text x="785" y="228" text-anchor="middle" fill="#9db0b8" font-size="13">design pattern, transport swap</text>
+
+                    <line x1="460" y1="102" x2="137" y2="154" stroke="#89c7ff" stroke-width="3" marker-end="url(#arrow)"/>
+                    <line x1="460" y1="102" x2="353" y2="154" stroke="#89c7ff" stroke-width="3" marker-end="url(#arrow)"/>
+                    <line x1="460" y1="102" x2="569" y2="154" stroke="#89c7ff" stroke-width="3" marker-end="url(#arrow)"/>
+                    <line x1="460" y1="102" x2="785" y2="154" stroke="#89c7ff" stroke-width="3" marker-end="url(#arrow)"/>
+
+                    <rect x="172" y="304" width="576" height="94" rx="18" fill="#251a14" stroke="#f4c178" stroke-width="2"/>
+                    <text x="460" y="340" text-anchor="middle" fill="#e7eef0" font-size="20" font-weight="700">Design Goal</text>
+                    <text x="460" y="366" text-anchor="middle" fill="#9db0b8" font-size="14">Make behavior easy to reason about from both the static and dynamic sides.</text>
+                    <text x="460" y="387" text-anchor="middle" fill="#9db0b8" font-size="14">Avoid "repair refreshes" and unclear ownership.</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Quick Start Paths</h2>
+        <p class="lede" style="margin-bottom: 0;">Use these entry points depending on what kind of understanding you need.</p>
+        <div class="quickstart">
+            <a href="#objects">
+                <strong>I want to know what the main things are</strong>
+                <span>Start with the core object pages and system layers.</span>
+            </a>
+            <a href="#mutations">
+                <strong>I want to know what happens when the user does something</strong>
+                <span>Start with mutation types and interaction-triggered state changes.</span>
+            </a>
+            <a href="#contracts">
+                <strong>I want to know what must update after a change</strong>
+                <span>Start with update contracts, invalidations, and consumers.</span>
+            </a>
+            <a href="#flows">
+                <strong>I want to understand an end-to-end scenario</strong>
+                <span>Start with the flow diagrams and UX traces.</span>
+            </a>
+        </div>
+    </section>
+
+    <section id="objects">
+        <h2>Objects</h2>
+        <div class="section-grid">
+            <div class="section-card">
+                <header>
+                    <h3>Model Objects</h3>
+                    <p>The authoritative musical/data objects that make up the project and workspace state. The objects section now has live Project, Workspace, Progression, Chord Block, Beat Lane, Generated Pattern, and Beat Lane Block pages.</p>
+                </header>
+                <div class="content">
+                    <div class="link-list">
+                        <div class="link-item"><strong><a href="./objects/Project.html">Project</a></strong><span>Top-level document, workspaces, transport-level metadata, persistence root.</span></div>
+                        <div class="link-item"><strong><a href="./objects/Workspace.html">Workspace</a></strong><span>Owns progression, Beat Lane, generated patterns, key context, and workspace-local settings.</span></div>
+                        <div class="link-item"><strong><a href="./objects/Progression.html">Progression</a></strong><span>Chord arrangement, loop region, and progression-level musical context.</span></div>
+                        <div class="link-item"><strong><a href="./objects/ChordBlock.html">Chord Block</a></strong><span>A placed chord in the Chord Roll with harmony and performance properties.</span></div>
+                        <div class="link-item"><strong><a href="./objects/BeatLane.html">Beat Lane</a></strong><span>The arrangement source of truth for placed beats in the workspace.</span></div>
+                        <div class="link-item"><strong><a href="./objects/BeatLaneBlock.html">Beat Lane Block</a></strong><span>A placed reference to a generated pattern in the Beat Lane.</span></div>
+                        <div class="link-item"><strong><a href="./objects/GeneratedPattern.html">Generated Pattern</a></strong><span>The reusable pattern asset edited in the Pattern Generator and referenced by Beat Lane blocks.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <header>
+                    <h3>Runtime / UI Objects</h3>
+                    <p>The runtime and UI-side objects that present, play, or coordinate the model. The runtime/UI object section now has live Pattern Generator Session and Playback Engine pages.</p>
+                </header>
+                <div class="content">
+                    <div class="link-list">
+                        <div class="link-item"><strong><a href="./objects/PlaybackEngine.html">Playback Engine</a></strong><span>Host/internal transport authority, playback caches, preview rendering, and cursor state.</span></div>
+                        <div class="link-item"><strong><a href="./objects/Editor.html">Editor</a></strong><span>Main composition root for Chord Lab UI, refresh domains, and routing.</span></div>
+                        <div class="link-item"><strong><a href="./objects/ChordRollView.html">Chord Roll View</a></strong><span>Main chord editing surface, selection visuals, and arrangement cursor display.</span></div>
+                        <div class="link-item"><strong><a href="./objects/BeatLaneView.html">Beat Lane View</a></strong><span>Beat arrangement surface and placed beat interactions.</span></div>
+                        <div class="link-item"><strong><a href="./objects/PatternGeneratorSession.html">Pattern Generator Session</a></strong><span>Tool-local state for design mode, placed-beat edit mode, and step selection.</span></div>
+                        <div class="link-item"><strong><a href="./objects/PreviewLayer.html">Preview Layer</a></strong><span>Local or global playback preview state that must stay separate from transport authority.</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="mutations">
+        <h2>Mutations</h2>
+        <div class="section-grid">
+            <div class="section-card">
+                <header>
+                    <h3>Behavior Categories</h3>
+                    <p>Mutation types describe state changes, not just button clicks. These pages are now live and form the shared vocabulary for update contracts.</p>
+                </header>
+                <div class="content">
+                    <div class="link-list">
+                        <div class="link-item"><strong><a href="./mutations/SelectionMutations.html">Selection Mutations</a></strong><span>Changes to the current edit target or focused object, global or tool-local.</span></div>
+                        <div class="link-item"><strong><a href="./mutations/ValueMutations.html">Value Mutations</a></strong><span>Direct edits to chord values, progression values, or settings values.</span></div>
+                        <div class="link-item"><strong><a href="./mutations/BeatLaneMutations.html">Beat Lane Mutations</a></strong><span>Place, move, delete, retarget, and kit-level changes in Beat Lane.</span></div>
+                        <div class="link-item"><strong><a href="./mutations/GeneratedPatternMutations.html">Generated Pattern Mutations</a></strong><span>Create, update, or delete reusable beat patterns.</span></div>
+                        <div class="link-item"><strong><a href="./mutations/TransportMutations.html">Transport Mutations</a></strong><span>Host/internal play state changes, transport authority changes, and cursor authority changes.</span></div>
+                        <div class="link-item"><strong><a href="./mutations/SessionMutations.html">Session Mutations</a></strong><span>Open/close tool sessions, switch Pattern Generator mode, change local preview targets.</span></div>
+                        <div class="link-item"><strong><a href="./mutations/LayoutMutations.html">Layout Mutations</a></strong><span>Resize, tab changes, visibility changes, and non-musical layout state.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <header>
+                    <h3>Important Distinction</h3>
+                    <p>Not every UI action is the same kind of mutation.</p>
+                </header>
+                <div class="content">
+                    <div class="note">
+                        <strong>Selection mutations</strong> change what the app or tool is targeting for editing.
+                    </div>
+                    <div class="note" style="margin-top: 12px;">
+                        <strong>Value mutations</strong> change authoritative data.
+                    </div>
+                    <div class="note" style="margin-top: 12px;">
+                        <strong>Session mutations</strong> change tool context, such as opening the Pattern Generator in design mode.
+                    </div>
+                    <div class="note" style="margin-top: 12px;">
+                        <strong>Layout mutations</strong> should only affect bounds and visibility. They should not trigger hidden semantic refreshes.
+                    </div>
+                    <div class="note" style="margin-top: 12px;">
+                        <strong>How the set fits together</strong><br>
+                        Selection chooses the target. Value changes stored data. Session changes tool context. Generated Pattern and Beat Lane mutations describe the two main beat domains. Transport defines playback authority. Layout keeps visual structure separate from semantic changes.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contracts">
+        <h2>Update Contracts</h2>
+        <div class="section-grid">
+            <div class="section-card">
+                <header>
+                    <h3>Core Contract Pages</h3>
+                    <p>These pages define what each mutation invalidates and who must react. The contracts section is now started with a live overview page.</p>
+                </header>
+                <div class="content">
+                    <div class="link-list">
+                        <div class="link-item"><strong><a href="./contracts/UpdateContracts.html">Update Contracts Overview</a></strong><span>Shared contract language, invalidation categories, and consumer model.</span></div>
+                        <div class="link-item"><strong><a href="./contracts/TransportAuthority.html">Transport Authority</a></strong><span>Host always wins, internal transport is first-class but subordinate, and transport-facing UI must reflect authority immediately.</span></div>
+                        <div class="link-item"><strong><a href="./contracts/PreviewVsTransport.html">Preview vs Transport</a></strong><span>How local audition and preview layers stay subordinate to transport instead of acting like a second timeline owner.</span></div>
+                        <div class="link-item"><strong><a href="./contracts/EditorRefreshDomains.html">Editor Refresh Domains</a></strong><span>How the main editor consumes invalidations in scoped domains instead of falling back to broad full refreshes.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <header>
+                    <h3>Current Working Rule</h3>
+                    <p>The system should become correct immediately after the mutation and its declared contract consumers run.</p>
+                </header>
+                <div class="content">
+                    <div class="note">
+                        <strong>No repair refreshes.</strong><br>
+                        If one mutation only becomes visibly correct after a later stronger action, then the original update contract is incomplete.
+                    </div>
+                    <div class="note" style="margin-top: 12px;">
+                        <strong>No silent overlap.</strong><br>
+                        Preview, audition, local tool playback, and transport authority must stay explicitly separated.
+                    </div>
+                    <div class="note" style="margin-top: 12px;">
+                        <strong>No generic full refresh by default.</strong><br>
+                        Broad refreshes should be the exception, not the normal response to state change.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="flows">
+        <h2>Key Flows</h2>
+        <div class="section-grid">
+            <div class="section-card">
+                <header>
+                    <h3>Musical Editing Flows</h3>
+                    <p>End-to-end user scenarios where multiple mutations and contracts chain together.</p>
+                </header>
+                <div class="content">
+                    <div class="link-list">
+                        <div class="link-item"><strong><a href="./flows/EditChordFlow.html">Edit Chord Flow</a></strong><span>Select a chord, modify its values, refresh inspector and arrangement state.</span></div>
+                        <div class="link-item"><strong><a href="./flows/BeatLaneEditFlow.html">Beat Lane Edit Flow</a></strong><span>Place, move, or delete Beat Lane blocks and update arrangement-following behavior.</span></div>
+                        <div class="link-item"><strong><a href="./flows/PatternGeneratorDesignFlow.html">Pattern Generator Design Flow</a></strong><span>Create and edit a standalone pattern while keeping preview behavior local and correct.</span></div>
+                        <div class="link-item"><strong><a href="./flows/PlacedBeatEditFlow.html">Placed Beat Edit Flow</a></strong><span>Open a Beat Lane block in the Pattern Generator and follow arrangement truth.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <header>
+                    <h3>Transport / Authority Flows</h3>
+                    <p>Playback behavior depends heavily on these flows being explicit and consistent.</p>
+                </header>
+                <div class="content">
+                    <div class="link-list">
+                        <div class="link-item"><strong><a href="./flows/InternalTransportFlow.html">Internal Transport Flow</a></strong><span>Chord Lab audition mode when host transport is inactive.</span></div>
+                        <div class="link-item"><strong><a href="./flows/HostTransportFlow.html">Host Transport Flow</a></strong><span>Host takes authority, internal controls disable, cursors follow host.</span></div>
+                        <div class="link-item"><strong><a href="./flows/TransportAuthoritySwapFlow.html">Authority Swap Flow</a></strong><span>How host start/stop and internal state transitions should resolve.</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 24px;">
+        <h2>Suggested Expansion Order</h2>
+        <div class="columns-3">
+            <div class="link-item">
+                <strong>1. Add the core object pages</strong>
+                <span>Start with <code>Project</code>, <code>Workspace</code>, <code>Progression</code>, <code>BeatLane</code>, <code>GeneratedPattern</code>, and <code>PlaybackEngine</code>.</span>
+            </div>
+            <div class="link-item">
+                <strong>2. Mutation family pages are now live</strong>
+                <span>The mutation reference set is in place, so the next pass can build object pages, contract pages, and end-to-end flows on top of a shared vocabulary.</span>
+            </div>
+            <div class="link-item">
+                <strong>3. Add flow pages after that</strong>
+                <span>Once objects and mutations are stable enough, the real UX flows become much easier to diagram accurately.</span>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

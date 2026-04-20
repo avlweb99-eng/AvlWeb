@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chord Lab Playback Engine</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1014;
+            --panel: #10181e;
+            --panel-2: #142129;
+            --text: #e7eef0;
+            --muted: #9db0b8;
+            --line: #2b4049;
+            --accent: #69d5b2;
+            --accent-2: #89c7ff;
+            --warn: #f4c178;
+            --good: #82e39d;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(105, 213, 178, 0.12), transparent 26%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        main {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 28px 22px 54px;
+        }
+
+        h1, h2, h3 { margin: 0 0 12px; line-height: 1.14; }
+        h1 { font-size: 34px; letter-spacing: -0.02em; }
+        h2 { font-size: 23px; margin-top: 28px; }
+        h3 {
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        p { margin: 0 0 14px; }
+        a { color: var(--accent-2); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(105, 213, 178, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lede {
+            max-width: 920px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .callout {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border-left: 4px solid var(--warn);
+            background: rgba(244, 193, 120, 0.08);
+        }
+
+        .callout strong { color: var(--warn); }
+        .diagram { overflow-x: auto; margin-top: 12px; }
+        svg { width: 100%; min-width: 980px; height: auto; display: block; }
+
+        .card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .table-wrap { overflow-x: auto; margin-top: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 840px; }
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--accent-2);
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+        }
+
+        .muted { color: var(--muted); }
+        ul { margin: 0; padding-left: 20px; }
+        li + li { margin-top: 8px; }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            color: var(--accent);
+            font-size: 0.95em;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 1020px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            main { padding: 22px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="stamp">Object Detail</div>
+    <h1>Playback Engine</h1>
+    <p class="lede">
+        The Playback Engine is the runtime object that resolves transport authority and turns project/workspace state into actual playback and cursor time.
+        It lives on the runtime side of Chord Lab and sits between model data, transport inputs, preview layers, and the timeline-facing views.
+        This object matters because it is where host-vs-internal authority, preview isolation, and arrangement-following behavior either become trustworthy or start to feel brittle.
+    </p>
+
+    <div class="footer-links">
+        <a href="../Index.html">Back to Object Diagram Hub</a>
+        <a href="./PatternGeneratorSession.html">Related: Pattern Generator Session</a>
+        <a href="../contracts/TransportAuthority.html">Related: Transport Authority</a>
+        <a href="../contracts/PreviewVsTransport.html">Related: Preview vs Transport</a>
+    </div>
+
+    <section class="grid-2" style="margin-top: 20px;">
+        <div class="panel">
+            <h2>Definition</h2>
+            <p>
+                The Playback Engine is the runtime object that consumes transport inputs, arrangement state, and preview state to produce audible playback and authoritative cursor time.
+                It resolves whether host or internal transport currently owns the timeline, applies arrangement-following playback rules, and layers scoped preview behavior without turning preview into a second transport.
+                When Chord Lab starts or stops playback, follows the host, runs internal audition, or updates local preview rendering, the Playback Engine is one of the main objects being exercised.
+            </p>
+            <div class="chip-row">
+                <span class="chip">Runtime authority resolver</span>
+                <span class="chip">Audio/cursor source</span>
+                <span class="chip">Preview-layer host</span>
+                <span class="chip">Transport-facing core</span>
+            </div>
+            <div class="callout" style="margin-top: 16px;">
+                <strong>Key distinction:</strong><br>
+                The Playback Engine is not the same as transport authority itself. Transport authority is a contract; the Playback Engine is the runtime object that enforces that contract and feeds the rest of the app.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>What This Object Is Not</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Is This Object</h3>
+                    <p>The runtime engine that decides which timeline is active and renders playback under that decision.</p>
+                </div>
+                <div class="card">
+                    <h3>Not This Object</h3>
+                    <p>The editor, the transport buttons, or the preview policy itself. Those are consumers or related contracts around the engine.</p>
+                </div>
+                <div class="card">
+                    <h3>Boundary Case</h3>
+                    <p>Pattern Generator design-mode looping may feel like it owns playback, but it still belongs to preview/session policy layered through the Playback Engine under transport authority.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Playback Engine Diagram</h2>
+        <p class="muted">The Playback Engine sits between model/transport inputs on one side and audible playback, cursors, and transport-facing UI consumers on the other.</p>
+        <div class="diagram">
+            <svg viewBox="0 0 1180 520" role="img" aria-label="Playback Engine relationships">
+                <rect x="34" y="36" width="290" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="442" y="36" width="300" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="860" y="36" width="286" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+
+                <text x="54" y="70" fill="#69d5b2" font-size="21" font-weight="700">Upstream</text>
+                <text x="462" y="70" fill="#89c7ff" font-size="21" font-weight="700">Playback Engine</text>
+                <text x="880" y="70" fill="#82e39d" font-size="21" font-weight="700">Downstream</text>
+
+                <text x="72" y="132" fill="#e7eef0" font-size="16" font-weight="700">Project / Workspace state</text>
+                <text x="72" y="154" fill="#9db0b8" font-size="13">Provides progression, Beat Lane, performance, and placed pattern truth</text>
+                <text x="72" y="220" fill="#e7eef0" font-size="16" font-weight="700">Host + internal transport inputs</text>
+                <text x="72" y="242" fill="#9db0b8" font-size="13">Provide the candidate owners of playback time</text>
+                <text x="72" y="308" fill="#e7eef0" font-size="16" font-weight="700">Preview/session intent</text>
+                <text x="72" y="330" fill="#9db0b8" font-size="13">Provides scoped local audition policy without owning transport</text>
+
+                <text x="480" y="132" fill="#e7eef0" font-size="16" font-weight="700">Resolves authority and time</text>
+                <text x="480" y="154" fill="#9db0b8" font-size="13">Chooses host or internal transport and computes active playback position</text>
+                <text x="480" y="220" fill="#e7eef0" font-size="16" font-weight="700">Renders transport + preview layers</text>
+                <text x="480" y="242" fill="#9db0b8" font-size="13">Keeps preview subordinate and arrangement-following playback coherent</text>
+                <text x="480" y="308" fill="#e7eef0" font-size="16" font-weight="700">Publishes playback-facing state</text>
+                <text x="480" y="330" fill="#9db0b8" font-size="13">Feeds cursors, status, and audio-facing consequences to the rest of the app</text>
+
+                <text x="882" y="132" fill="#e7eef0" font-size="16" font-weight="700">Audio output / MIDI render</text>
+                <text x="882" y="154" fill="#9db0b8" font-size="13">Produces the actual playback result under resolved authority</text>
+                <text x="882" y="220" fill="#e7eef0" font-size="16" font-weight="700">Chord Roll / Beat Lane cursors</text>
+                <text x="882" y="242" fill="#9db0b8" font-size="13">Views consume the engine's authoritative playback position</text>
+                <text x="882" y="308" fill="#e7eef0" font-size="16" font-weight="700">Transport-facing UI</text>
+                <text x="882" y="330" fill="#9db0b8" font-size="13">Status text, disabled states, and session behavior depend on the engine's resolved playback state</text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Core Responsibilities</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Responsibility</th>
+                        <th>Meaning</th>
+                        <th>What It Owns</th>
+                        <th>What It Does Not Own</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Transport resolution</td>
+                        <td>Determines which playback timeline is currently authoritative</td>
+                        <td>Resolved runtime playback mode, active playback position, and authority-dependent status</td>
+                        <td>High-level product policy itself</td>
+                        <td>The rule is "host always wins"; the Playback Engine is where that becomes real behavior.</td>
+                    </tr>
+                    <tr>
+                        <td>Arrangement-following render</td>
+                        <td>Turns progression, Beat Lane, and performance state into actual playback events</td>
+                        <td>Runtime render state and playback caches</td>
+                        <td>The source model objects themselves</td>
+                        <td>This is why stale playback behavior often points back to engine update/invalidation contracts.</td>
+                    </tr>
+                    <tr>
+                        <td>Preview-layer isolation</td>
+                        <td>Allows local preview behavior to be heard without becoming a second transport or corrupting main playback</td>
+                        <td>Scoped preview rendering and preview-only state handling</td>
+                        <td>Tool-local session ownership or editor layout state</td>
+                        <td>This boundary has been a repeated source of Pattern Generator bugs and hardening work.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Relationships In Chord Lab</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Related Object</th>
+                        <th>Relationship</th>
+                        <th>Direction</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Project / Workspace</td>
+                        <td>The engine consumes shared arrangement and pattern state for playback</td>
+                        <td>Upstream input</td>
+                        <td>Model truth lives upstream; the engine consumes snapshots or derived runtime state from it.</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern Generator Session</td>
+                        <td>The engine consumes session-level preview intent and mode-specific playback policy</td>
+                        <td>Upstream input</td>
+                        <td>The session can request local preview behavior, but the engine still owns actual runtime resolution.</td>
+                    </tr>
+                    <tr>
+                        <td>Chord Roll / Beat Lane views</td>
+                        <td>The views consume authoritative playback cursor and playback status from the engine</td>
+                        <td>Downstream consumer</td>
+                        <td>This is why the engine is central to keeping cursors visually honest.</td>
+                    </tr>
+                    <tr>
+                        <td>Transport UI</td>
+                        <td>Status text and enabled states reflect the engine's resolved authority and active play state</td>
+                        <td>Downstream consumer</td>
+                        <td>UI trust depends on these states matching actual engine behavior immediately.</td>
+                    </tr>
+                    <tr>
+                        <td>Transport Authority / Preview vs Transport contracts</td>
+                        <td>The engine is the main runtime enforcer of these contracts</td>
+                        <td>Related contract surface</td>
+                        <td>These contract pages describe the rules the engine must embody.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Mutation Touch Points</h2>
+            <ul>
+                <li>Transport mutations directly affect the Playback Engine by changing which time source is active and whether playback is running.</li>
+                <li>Beat Lane and Generated Pattern mutations affect the engine indirectly by changing the arrangement or beat content it must render.</li>
+                <li>Session mutations affect the engine when they change preview policy, placed-beat context, or local audition intent for the Pattern Generator.</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h2>Design Tensions / Failure Modes</h2>
+            <ul>
+                <li>If preview updates are routed through the same heavy or authority-owning path as main playback, the engine can retrigger notes, feel laggy, or appear to glitch.</li>
+                <li>If host-authority resolution is correct in the engine but not reflected immediately in the UI, users still experience playback as untrustworthy.</li>
+                <li>Because the engine sits at the intersection of transport, arrangement, and preview, weak invalidation boundaries here can make many unrelated workflows feel brittle at once.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Related Pages / Next Pages</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3><a href="./Editor.html">Editor</a></h3>
+                <p>Read this next to document how the main UI composition root consumes playback-engine state and routes transport-facing refreshes.</p>
+            </div>
+            <div class="card">
+                <h3><a href="../contracts/TransportAuthority.html">Transport Authority</a></h3>
+                <p>Read this next to connect the engine object here to the authority rules it must enforce.</p>
+            </div>
+            <div class="card">
+                <h3><a href="../contracts/PreviewVsTransport.html">Preview vs Transport</a></h3>
+                <p>Read this next to connect the engine's preview-layer behavior to the contract that should keep it cheap, scoped, and subordinate.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

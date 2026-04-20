@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chord Lab Preview vs Transport</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1014;
+            --panel: #10181e;
+            --panel-2: #142129;
+            --text: #e7eef0;
+            --muted: #9db0b8;
+            --line: #2b4049;
+            --accent: #69d5b2;
+            --accent-2: #89c7ff;
+            --warn: #f4c178;
+            --good: #82e39d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(105, 213, 178, 0.12), transparent 26%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        main {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 28px 22px 54px;
+        }
+
+        h1, h2, h3 { margin: 0 0 12px; line-height: 1.14; }
+        h1 { font-size: 34px; letter-spacing: -0.02em; }
+        h2 { font-size: 23px; margin-top: 28px; }
+        h3 {
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        p { margin: 0 0 14px; }
+        a { color: var(--accent-2); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(105, 213, 178, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lede {
+            max-width: 920px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .callout {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border-left: 4px solid var(--warn);
+            background: rgba(244, 193, 120, 0.08);
+        }
+
+        .callout strong { color: var(--warn); }
+        .diagram { overflow-x: auto; margin-top: 12px; }
+        svg { width: 100%; min-width: 980px; height: auto; display: block; }
+
+        .card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .table-wrap { overflow-x: auto; margin-top: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 840px; }
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--accent-2);
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+        }
+
+        .muted { color: var(--muted); }
+        ul { margin: 0; padding-left: 20px; }
+        li + li { margin-top: 8px; }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            color: var(--accent);
+            font-size: 0.95em;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 1020px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            main { padding: 22px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="stamp">Contract Detail</div>
+    <h1>Preview vs Transport</h1>
+    <p class="lede">
+        Preview and transport are two different layers of behavior.
+        Transport owns the main time source and playback authority; preview adds local or contextual audition behavior without becoming a competing owner of time.
+        This contract matters because many of Chord Lab's brittle playback bugs come from preview behavior being routed through authority-owned paths or being allowed to act like a second transport.
+    </p>
+
+    <div class="footer-links">
+        <a href="../Index.html">Back to Object Diagram Hub</a>
+        <a href="../mutations/TransportMutations.html">Related: Transport Mutations</a>
+        <a href="./TransportAuthority.html">Related: Transport Authority</a>
+        <a href="../mutations/SessionMutations.html">Related: Session Mutations</a>
+    </div>
+
+    <section class="grid-2" style="margin-top: 20px;">
+        <div class="panel">
+            <h2>Definition</h2>
+            <p>
+                Transport is the authoritative owner of playback time; preview is a local or contextual playback layer that can add or audition material under that authority.
+                In Chord Lab, preview behavior includes Pattern Generator audition and similar local test playback, while transport is owned by the host or internal playback engine according to the authority contract.
+                This contract protects the system from double playback, wrong cursor ownership, and preview changes accidentally resetting or corrupting main playback.
+            </p>
+            <div class="chip-row">
+                <span class="chip">Layered behavior</span>
+                <span class="chip">Transport owns time</span>
+                <span class="chip">Preview stays scoped</span>
+                <span class="chip">No silent overlap</span>
+            </div>
+            <div class="callout" style="margin-top: 16px;">
+                <strong>Key distinction:</strong><br>
+                Preview can change what is heard locally, but it must not silently change who owns playback time or make the app behave as if a second transport is running.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>What This Is Not</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Is This Contract</h3>
+                    <p>Pattern Generator can audition a pattern while editing, but that audition must not leak chord notes into main playback or override host transport ownership.</p>
+                </div>
+                <div class="card">
+                    <h3>Not This Contract</h3>
+                    <p>"Host transport always wins." That is the transport authority rule itself. This page governs how preview behaves under that authority.</p>
+                </div>
+                <div class="card">
+                    <h3>Boundary Case</h3>
+                    <p>A local design-mode loop can feel transport-like to the user, but it still belongs to preview/session policy unless it actually owns the main playback timeline.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Preview vs Transport Diagram</h2>
+        <p class="muted">Transport resolves the owner of time. Preview layers may add local playback behavior, but they must remain subordinate and scoped under that owner.</p>
+        <div class="diagram">
+            <svg viewBox="0 0 1180 520" role="img" aria-label="Preview versus transport flow">
+                <rect x="34" y="36" width="290" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="442" y="36" width="300" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="860" y="36" width="286" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+
+                <text x="54" y="70" fill="#69d5b2" font-size="21" font-weight="700">Inputs</text>
+                <text x="462" y="70" fill="#89c7ff" font-size="21" font-weight="700">Layer Contract</text>
+                <text x="880" y="70" fill="#82e39d" font-size="21" font-weight="700">Consumers</text>
+
+                <text x="72" y="132" fill="#e7eef0" font-size="16" font-weight="700">Transport authority</text>
+                <text x="72" y="154" fill="#9db0b8" font-size="13">Host or internal transport owns time</text>
+                <text x="72" y="220" fill="#e7eef0" font-size="16" font-weight="700">Preview intent</text>
+                <text x="72" y="242" fill="#9db0b8" font-size="13">Tool or local workflow wants audition behavior</text>
+                <text x="72" y="308" fill="#e7eef0" font-size="16" font-weight="700">Session mode</text>
+                <text x="72" y="330" fill="#9db0b8" font-size="13">Placed-beat mode vs design mode vs no preview</text>
+
+                <text x="480" y="132" fill="#e7eef0" font-size="16" font-weight="700">Rule 1: Transport owns time</text>
+                <text x="480" y="154" fill="#9db0b8" font-size="13">Preview cannot become the owner of the main timeline</text>
+                <text x="480" y="220" fill="#e7eef0" font-size="16" font-weight="700">Rule 2: Preview is additive or scoped</text>
+                <text x="480" y="242" fill="#9db0b8" font-size="13">Preview changes what is auditioned, not who controls playback</text>
+                <text x="480" y="308" fill="#e7eef0" font-size="16" font-weight="700">Rule 3: Preview resets must not corrupt transport</text>
+                <text x="480" y="330" fill="#9db0b8" font-size="13">Changing preview state should not cause chord re-triggers or timeline discontinuities unless truly intended</text>
+
+                <text x="882" y="132" fill="#e7eef0" font-size="16" font-weight="700">Playback engine</text>
+                <text x="882" y="154" fill="#9db0b8" font-size="13">Renders transport-owned playback plus scoped preview layer</text>
+                <text x="882" y="220" fill="#e7eef0" font-size="16" font-weight="700">Pattern Generator</text>
+                <text x="882" y="242" fill="#9db0b8" font-size="13">Uses preview policy appropriate to current session mode</text>
+                <text x="882" y="308" fill="#e7eef0" font-size="16" font-weight="700">Cursors and UI</text>
+                <text x="882" y="330" fill="#9db0b8" font-size="13">Follow authority-owned time, not preview-owned fake time</text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Examples</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Placed-Beat Editing</h3>
+                    <p>Open Pattern Generator on a Beat Lane block. The cursor and audible behavior should follow the real placement in the arrangement, not a free-running local preview loop.</p>
+                </div>
+                <div class="card">
+                    <h3>Design-Mode Audition</h3>
+                    <p>Open Pattern Generator in standalone design mode. The pattern may loop locally for audition, but this local loop is still a preview behavior layered under transport authority.</p>
+                </div>
+                <div class="card">
+                    <h3>Preview Isolation Fix</h3>
+                    <p>Changing preview state should not inject chord notes into the main playback path. Preview events must stay isolated from normal arrangement playback unless explicitly intended.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Non-Examples</h2>
+            <ul>
+                <li>"Host playback disables internal controls"
+                    <span class="muted">That belongs to the transport authority contract.</span>
+                </li>
+                <li>"Selecting a step updates the step inspector"
+                    <span class="muted">That belongs to selection/session behavior, not the preview-layer contract.</span>
+                </li>
+                <li>"The Beat Lane block moved to bar 5"
+                    <span class="muted">That is a Beat Lane mutation; preview only changes how the result may be auditioned.</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Preview vs Transport Rules</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rule</th>
+                        <th>Meaning</th>
+                        <th>Applies To</th>
+                        <th>Must Prevent</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Preview does not own the main timeline</td>
+                        <td>Preview can audition material, but it must not silently become the source of authoritative playback time.</td>
+                        <td>Pattern Generator preview, local audition loops, preview note layers</td>
+                        <td>Competing transport owners and wrong cursor authority</td>
+                        <td>This is the most important boundary between preview and true transport.</td>
+                    </tr>
+                    <tr>
+                        <td>Preview state changes must be cheap and scoped</td>
+                        <td>Changing preview targets or preview enablement should touch only preview-relevant playback paths and local UI.</td>
+                        <td>Pattern Generator, preview playback caches, local tool summaries</td>
+                        <td>Broad project publish, full editor churn, heavy undo paths for high-frequency edits</td>
+                        <td>This is directly tied to Pattern Generator responsiveness.</td>
+                    </tr>
+                    <tr>
+                        <td>Preview resets must not retrigger main playback unintentionally</td>
+                        <td>Refreshing or clearing preview state should not be treated like a discontinuity in the main arrangement playback path unless explicitly intended.</td>
+                        <td>Playback engine voice reset logic, preview enable/disable, preview pattern updates</td>
+                        <td>Chord notes retriggering when editing preview content</td>
+                        <td>This rule was surfaced by the earlier Pattern Generator playback bug.</td>
+                    </tr>
+                    <tr>
+                        <td>Session mode determines preview policy</td>
+                        <td>Placed-beat mode and design mode may use preview differently, but both must still respect transport authority.</td>
+                        <td>Pattern Generator session logic, cursor policy, local loop behavior</td>
+                        <td>Dishonest or confusing tool behavior across modes</td>
+                        <td>Placed-beat mode follows arrangement truth; design mode may audition locally.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Chord Lab Contract Surfaces</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Surface</th>
+                        <th>Role In Contract</th>
+                        <th>What It Consumes</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Playback engine preview layer</td>
+                        <td>Preview renderer</td>
+                        <td>Resolved transport authority plus preview-specific state</td>
+                        <td>This is where preview must stay additive/scoped instead of becoming a second transport.</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern Generator session</td>
+                        <td>Preview policy owner</td>
+                        <td>Session mode, preview intent, local target pattern</td>
+                        <td>Design mode and placed-beat mode consume the same rule differently.</td>
+                    </tr>
+                    <tr>
+                        <td>Transport-facing UI and cursors</td>
+                        <td>Authority-visible consumer</td>
+                        <td>Resolved transport time only, not preview-owned local time</td>
+                        <td>Cursors should not drift into pretending that preview owns the main timeline.</td>
+                    </tr>
+                    <tr>
+                        <td>Processor update paths</td>
+                        <td>Mutation router</td>
+                        <td>Whether a change is preview-only, transport-relevant, or shared-model relevant</td>
+                        <td>This is where lightweight preview updates should remain distinct from heavier arrangement publishes.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Design Tensions / Failure Modes</h2>
+            <ul>
+                <li>Pattern Generator has repeatedly exposed preview-vs-transport confusion because local audition, placed-beat following, and arrangement playback all want different behavior from closely related code paths.</li>
+                <li>If preview state goes through the same heavy mutation and playback-reset path as arrangement truth, the tool feels brittle and laggy even when the conceptual edit is local.</li>
+                <li>Preview can feel transport-like to the user, which makes the boundary easy to blur unless the contract is explicit in both code and UI behavior.</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h2>Open Questions</h2>
+            <ul>
+                <li>How much of the preview layer should remain processor-visible versus entirely local to the tool session?</li>
+                <li>Should preview-only updates eventually bypass more of the shared processor/playback state machinery entirely?</li>
+                <li>What is the cleanest long-term rule for Pattern Generator design-mode local looping when host transport is active versus inactive?</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Related Pages / Next Pages</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>Editor Refresh Domains</h3>
+                <p>Read this next to connect preview-scoped updates to the editor-side refresh boundaries.</p>
+            </div>
+            <div class="card">
+                <h3>Transport Authority</h3>
+                <p>Read this next to revisit the main authority rule that preview must always respect.</p>
+            </div>
+            <div class="card">
+                <h3>Generated Pattern Mutations</h3>
+                <p>Read this next to connect local preview behavior back to shared pattern-asset edits.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chord Lab Transport Authority</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1014;
+            --panel: #10181e;
+            --panel-2: #142129;
+            --text: #e7eef0;
+            --muted: #9db0b8;
+            --line: #2b4049;
+            --accent: #69d5b2;
+            --accent-2: #89c7ff;
+            --warn: #f4c178;
+            --good: #82e39d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(105, 213, 178, 0.12), transparent 26%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        main {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 28px 22px 54px;
+        }
+
+        h1, h2, h3 { margin: 0 0 12px; line-height: 1.14; }
+        h1 { font-size: 34px; letter-spacing: -0.02em; }
+        h2 { font-size: 23px; margin-top: 28px; }
+        h3 {
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        p { margin: 0 0 14px; }
+        a { color: var(--accent-2); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(105, 213, 178, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lede {
+            max-width: 920px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .callout {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border-left: 4px solid var(--warn);
+            background: rgba(244, 193, 120, 0.08);
+        }
+
+        .callout strong { color: var(--warn); }
+        .diagram { overflow-x: auto; margin-top: 12px; }
+        svg { width: 100%; min-width: 980px; height: auto; display: block; }
+
+        .card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .table-wrap { overflow-x: auto; margin-top: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 840px; }
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--accent-2);
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+        }
+
+        .muted { color: var(--muted); }
+        ul { margin: 0; padding-left: 20px; }
+        li + li { margin-top: 8px; }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            color: var(--accent);
+            font-size: 0.95em;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 1020px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            main { padding: 22px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="stamp">Contract Detail</div>
+    <h1>Transport Authority</h1>
+    <p class="lede">
+        Transport authority defines which timeline owns playback at any given moment.
+        In Chord Lab, this contract governs the relationship between host transport, internal transport, and any tool-local audition behavior layered on top of them.
+        This contract matters because unclear authority leads directly to double playback, wrong cursors, disabled-state confusion, and the feeling that playback cannot be fully trusted.
+    </p>
+
+    <div class="footer-links">
+        <a href="../Index.html">Back to Object Diagram Hub</a>
+        <a href="../mutations/TransportMutations.html">Related: Transport Mutations</a>
+        <a href="./UpdateContracts.html">Related: Update Contracts</a>
+        <a href="./PreviewVsTransport.html">Related: Preview vs Transport</a>
+    </div>
+
+    <section class="grid-2" style="margin-top: 20px;">
+        <div class="panel">
+            <h2>Definition</h2>
+            <p>
+                Transport authority is the rule that determines which time source the app must follow for playback and transport-facing UI.
+                In Chord Lab, host transport is authoritative whenever the host reports active playback; internal transport is valid only when the host is not playing.
+                This contract protects the app from conflicting playback owners and makes transport behavior explicit instead of accidental.
+            </p>
+            <div class="chip-row">
+                <span class="chip">Authority-first</span>
+                <span class="chip">Host wins</span>
+                <span class="chip">Internal is valid</span>
+                <span class="chip">Preview is separate</span>
+            </div>
+            <div class="callout" style="margin-top: 16px;">
+                <strong>Key distinction:</strong><br>
+                Transport authority is not the same thing as preview or audition. Preview can layer behavior on top of transport, but it must not silently become a second transport owner.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>What This Is Not</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Is This Contract</h3>
+                    <p>If the host starts playing, Chord Lab must follow host timing immediately and internal transport controls should no longer act as active transport controls.</p>
+                </div>
+                <div class="card">
+                    <h3>Not This Contract</h3>
+                    <p>"The Pattern Generator can loop locally while I design a beat." That is a tool-local behavior policy, not transport authority by itself.</p>
+                </div>
+                <div class="card">
+                    <h3>Boundary Case</h3>
+                    <p>Internal transport is first-class in Chord Lab, but it is still subordinate to host playback whenever the host is active. First-class does not mean co-equal authority.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Transport Authority Diagram</h2>
+        <p class="muted">Transport authority takes transport state as input, resolves a single owner of time, and makes every transport-facing surface follow that owner.</p>
+        <div class="diagram">
+            <svg viewBox="0 0 1180 520" role="img" aria-label="Transport authority flow">
+                <rect x="34" y="36" width="290" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="442" y="36" width="300" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="860" y="36" width="286" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+
+                <text x="54" y="70" fill="#69d5b2" font-size="21" font-weight="700">Inputs</text>
+                <text x="462" y="70" fill="#89c7ff" font-size="21" font-weight="700">Authority Contract</text>
+                <text x="880" y="70" fill="#82e39d" font-size="21" font-weight="700">Consumers</text>
+
+                <text x="72" y="132" fill="#e7eef0" font-size="16" font-weight="700">Host play-state</text>
+                <text x="72" y="154" fill="#9db0b8" font-size="13">Is the host currently playing?</text>
+                <text x="72" y="220" fill="#e7eef0" font-size="16" font-weight="700">Internal play-state</text>
+                <text x="72" y="242" fill="#9db0b8" font-size="13">Is Chord Lab internal transport active?</text>
+                <text x="72" y="308" fill="#e7eef0" font-size="16" font-weight="700">Tool-local playback intent</text>
+                <text x="72" y="330" fill="#9db0b8" font-size="13">Pattern Generator or preview wants local playback behavior</text>
+
+                <text x="480" y="132" fill="#e7eef0" font-size="16" font-weight="700">Rule 1: Host always wins</text>
+                <text x="480" y="154" fill="#9db0b8" font-size="13">If host is playing, host transport is authoritative immediately</text>
+                <text x="480" y="220" fill="#e7eef0" font-size="16" font-weight="700">Rule 2: Internal is valid when host is idle</text>
+                <text x="480" y="242" fill="#9db0b8" font-size="13">Internal transport is first-class, but only when host is not active</text>
+                <text x="480" y="308" fill="#e7eef0" font-size="16" font-weight="700">Rule 3: Local playback must defer</text>
+                <text x="480" y="330" fill="#9db0b8" font-size="13">Tool-local audition never silently overrides transport authority</text>
+
+                <text x="882" y="132" fill="#e7eef0" font-size="16" font-weight="700">Playback engine</text>
+                <text x="882" y="154" fill="#9db0b8" font-size="13">Renders under the resolved authority</text>
+                <text x="882" y="220" fill="#e7eef0" font-size="16" font-weight="700">Transport UI</text>
+                <text x="882" y="242" fill="#9db0b8" font-size="13">Buttons and status text reflect current authority</text>
+                <text x="882" y="308" fill="#e7eef0" font-size="16" font-weight="700">Cursors and views</text>
+                <text x="882" y="330" fill="#9db0b8" font-size="13">Chord Roll, Beat Lane, and placed-beat views follow the same owner</text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Examples</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Host Override</h3>
+                    <p>Internal transport is already running, then the host starts playback. Host immediately becomes authoritative and internal controls should visually reflect that they are no longer the active owner.</p>
+                </div>
+                <div class="card">
+                    <h3>Internal Audition Workflow</h3>
+                    <p>The host is idle and the user presses play in Chord Lab. Internal transport is now the active authority and the Chord Roll/Beat Lane follow it normally.</p>
+                </div>
+                <div class="card">
+                    <h3>Local Tool Under Authority</h3>
+                    <p>Pattern Generator design mode loops locally, but if host playback is active the tool still operates under host-owned playback authority rather than acting like a competing transport.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Non-Examples</h2>
+            <ul>
+                <li>"Preview notes should not leak into main playback"
+                    <span class="muted">That is preview-layer isolation, not the authority rule itself.</span>
+                </li>
+                <li>"The cursor repainted at the right time"
+                    <span class="muted">That is a consumer outcome of authority, not the contract.</span>
+                </li>
+                <li>"The Pattern Generator opened in design mode"
+                    <span class="muted">That is a session mutation. It may imply local playback behavior, but it does not define transport ownership alone.</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Transport Authority Rules</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rule</th>
+                        <th>Meaning</th>
+                        <th>Applies To</th>
+                        <th>Must Prevent</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Host transport is authoritative whenever host playback is active</td>
+                        <td>The host becomes the single owner of playback time as soon as it reports play-state.</td>
+                        <td>Playback engine, transport UI, cursors, arrangement-following views</td>
+                        <td>Internal transport continuing as a competing owner</td>
+                        <td>This is an explicit product requirement already agreed in the project.</td>
+                    </tr>
+                    <tr>
+                        <td>Internal transport is first-class only while host is idle</td>
+                        <td>Chord Lab internal transport is a valid user workflow, but only when the host is not playing.</td>
+                        <td>Internal play/stop controls, internal audition flow, status text</td>
+                        <td>Internal transport being treated like a fallback-only hack or, conversely, like a co-equal host competitor</td>
+                        <td>“First-class” here means product support and UX clarity, not shared authority with the host.</td>
+                    </tr>
+                    <tr>
+                        <td>Transport-facing UI must reflect authority immediately</td>
+                        <td>Buttons, labels, and enabled states must match the active authority as soon as it changes.</td>
+                        <td>Main transport bar, status labels, disabled states</td>
+                        <td>UI lying about which transport is currently in charge</td>
+                        <td>Internal play/stop should be disabled while host transport is active.</td>
+                    </tr>
+                    <tr>
+                        <td>Tool-local audition must defer to authority</td>
+                        <td>Local playback behavior can exist, but it cannot silently become a second transport owner.</td>
+                        <td>Pattern Generator design mode, preview layers, local loops</td>
+                        <td>Double playback, wrong cursor ownership, competing play-state logic</td>
+                        <td>This rule is where authority and preview/session contracts intersect.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Chord Lab Contract Surfaces</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Surface</th>
+                        <th>Role In Contract</th>
+                        <th>What It Consumes</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Playback engine</td>
+                        <td>Authority resolver and audio-time consumer</td>
+                        <td>Host play-state, internal play-state, authority rules</td>
+                        <td>This is where the actual single-owner-of-time rule must be enforced at runtime.</td>
+                    </tr>
+                    <tr>
+                        <td>Main editor transport UI</td>
+                        <td>Authority-visible UI consumer</td>
+                        <td>Resolved authority state and current playback mode</td>
+                        <td>Needs to expose host-following vs internal-playing clearly and disable internal controls under host playback.</td>
+                    </tr>
+                    <tr>
+                        <td>Chord Roll and Beat Lane views</td>
+                        <td>Timeline-following consumers</td>
+                        <td>Resolved transport time and authority</td>
+                        <td>Views must not diverge on which timeline they are following.</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern Generator session</td>
+                        <td>Tool-local behavior consumer</td>
+                        <td>Authority state plus local playback policy</td>
+                        <td>Placed-beat mode and design mode each need to respect the same authority contract differently.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Design Tensions / Failure Modes</h2>
+            <ul>
+                <li>The playback engine already reflects host priority, but the UI has historically not made authority visible or enforce it strongly enough.</li>
+                <li>Internal transport can feel "second class" when it is only treated as a fallback in the product, even if the engine supports it properly.</li>
+                <li>Pattern Generator preview and design-mode looping expose authority confusion quickly because they sit at the edge of transport, preview, and local tool behavior.</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h2>Open Questions</h2>
+            <ul>
+                <li>Which exact transport controls should be disabled during host playback, and which should remain visible but passive?</li>
+                <li>Should host-active state be represented as a dedicated editor-wide status object so every transport-facing surface can consume it consistently?</li>
+                <li>How should future custom loop-region support interact with authority without making cursor ownership ambiguous?</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Related Pages / Next Pages</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>Preview vs Transport</h3>
+                <p>Read this next to separate local audition and preview layers from true transport ownership.</p>
+            </div>
+            <div class="card">
+                <h3>Editor Refresh Domains</h3>
+                <p>Read this next to connect authority changes to scoped editor reactions instead of broad refresh behavior.</p>
+            </div>
+            <div class="card">
+                <h3>Transport Mutations</h3>
+                <p>Read this next to see the mutation side of the authority rules documented here.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

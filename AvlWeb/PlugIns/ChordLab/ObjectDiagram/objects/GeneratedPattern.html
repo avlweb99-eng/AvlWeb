@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chord Lab Generated Pattern</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a1014;
+            --panel: #10181e;
+            --panel-2: #142129;
+            --text: #e7eef0;
+            --muted: #9db0b8;
+            --line: #2b4049;
+            --accent: #69d5b2;
+            --accent-2: #89c7ff;
+            --warn: #f4c178;
+            --good: #82e39d;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(105, 213, 178, 0.12), transparent 26%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        main {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 28px 22px 54px;
+        }
+
+        h1, h2, h3 { margin: 0 0 12px; line-height: 1.14; }
+        h1 { font-size: 34px; letter-spacing: -0.02em; }
+        h2 { font-size: 23px; margin-top: 28px; }
+        h3 {
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        p { margin: 0 0 14px; }
+        a { color: var(--accent-2); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .stamp {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(105, 213, 178, 0.08);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lede {
+            max-width: 920px;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .callout {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border-left: 4px solid var(--warn);
+            background: rgba(244, 193, 120, 0.08);
+        }
+
+        .callout strong { color: var(--warn); }
+        .diagram { overflow-x: auto; margin-top: 12px; }
+        svg { width: 100%; min-width: 980px; height: auto; display: block; }
+
+        .card {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+        }
+
+        .table-wrap { overflow-x: auto; margin-top: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 840px; }
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--accent-2);
+            background: rgba(255,255,255,0.02);
+            font-weight: 700;
+        }
+
+        .muted { color: var(--muted); }
+        ul { margin: 0; padding-left: 20px; }
+        li + li { margin-top: 8px; }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            color: var(--accent);
+            font-size: 0.95em;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 1020px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            main { padding: 22px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="stamp">Object Detail</div>
+    <h1>Generated Pattern</h1>
+    <p class="lede">
+        A Generated Pattern is the reusable beat asset that Pattern Generator edits and Beat Lane blocks reference.
+        It lives under a workspace as shared pattern-library state rather than as a placed arrangement event.
+        This object matters because many current Chord Lab behaviors depend on keeping the reusable asset cleanly separated from the placed Beat Lane truth and from local tool-session state.
+    </p>
+
+    <div class="footer-links">
+        <a href="../Index.html">Back to Object Diagram Hub</a>
+        <a href="./BeatLane.html">Related: Beat Lane</a>
+        <a href="../mutations/GeneratedPatternMutations.html">Related: Generated Pattern Mutations</a>
+        <a href="../contracts/PreviewVsTransport.html">Related: Preview vs Transport</a>
+    </div>
+
+    <section class="grid-2" style="margin-top: 20px;">
+        <div class="panel">
+            <h2>Definition</h2>
+            <p>
+                A Generated Pattern is the model object that stores reusable beat content such as step placement, step values, bar count, and pattern-level identity.
+                It is owned by a workspace pattern library and can be referenced by zero, one, or many Beat Lane blocks.
+                When the user creates a new beat design, renames a pattern, or edits steps in the Pattern Generator, they are mutating Generated Pattern state.
+            </p>
+            <div class="chip-row">
+                <span class="chip">Reusable beat asset</span>
+                <span class="chip">Workspace-owned</span>
+                <span class="chip">Shared library state</span>
+                <span class="chip">Pattern Generator target</span>
+            </div>
+            <div class="callout" style="margin-top: 16px;">
+                <strong>Key distinction:</strong><br>
+                Generated Pattern is not the same as Beat Lane. The pattern is a reusable asset definition; Beat Lane is the arrangement object that decides where that asset is actually placed.
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>What This Object Is Not</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Is This Object</h3>
+                    <p>The shared beat asset that stores steps, step values, and pattern identity independently of any single placement in the arrangement.</p>
+                </div>
+                <div class="card">
+                    <h3>Not This Object</h3>
+                    <p>A placed Beat Lane block. Placement timing and arrangement truth live in Beat Lane, not in the generated pattern asset.</p>
+                </div>
+                <div class="card">
+                    <h3>Boundary Case</h3>
+                    <p>The Pattern Generator may open on a placed Beat Lane block, but the dialog is still editing the shared generated pattern unless and until the product introduces separate copy-on-edit semantics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Generated Pattern Diagram</h2>
+        <p class="muted">Generated Pattern sits between workspace-owned library state and the consumers that either place it in the arrangement or edit/audition it locally.</p>
+        <div class="diagram">
+            <svg viewBox="0 0 1180 520" role="img" aria-label="Generated Pattern relationships">
+                <rect x="34" y="36" width="290" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="442" y="36" width="300" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+                <rect x="860" y="36" width="286" height="448" rx="18" fill="#10181e" stroke="#2b4049"/>
+
+                <text x="54" y="70" fill="#69d5b2" font-size="21" font-weight="700">Upstream</text>
+                <text x="462" y="70" fill="#89c7ff" font-size="21" font-weight="700">Generated Pattern</text>
+                <text x="880" y="70" fill="#82e39d" font-size="21" font-weight="700">Downstream</text>
+
+                <text x="72" y="132" fill="#e7eef0" font-size="16" font-weight="700">Workspace</text>
+                <text x="72" y="154" fill="#9db0b8" font-size="13">Owns the shared generated-pattern library for one musical scope</text>
+                <text x="72" y="220" fill="#e7eef0" font-size="16" font-weight="700">Pattern Generator mutations</text>
+                <text x="72" y="242" fill="#9db0b8" font-size="13">Create, rename, delete, and step edits write back into this asset</text>
+
+                <text x="480" y="132" fill="#e7eef0" font-size="16" font-weight="700">Owns reusable beat definition</text>
+                <text x="480" y="154" fill="#9db0b8" font-size="13">Stores bars, steps, step values, and asset identity</text>
+                <text x="480" y="220" fill="#e7eef0" font-size="16" font-weight="700">Can be shared by many placements</text>
+                <text x="480" y="242" fill="#9db0b8" font-size="13">One pattern asset may affect several Beat Lane blocks at once</text>
+
+                <text x="882" y="132" fill="#e7eef0" font-size="16" font-weight="700">Beat Lane / Beat Lane Block</text>
+                <text x="882" y="154" fill="#9db0b8" font-size="13">Placed blocks reference the pattern asset to sound in the arrangement</text>
+                <text x="882" y="220" fill="#e7eef0" font-size="16" font-weight="700">Pattern Generator session</text>
+                <text x="882" y="242" fill="#9db0b8" font-size="13">Edits and previews the asset in design mode or placed-beat mode</text>
+                <text x="882" y="308" fill="#e7eef0" font-size="16" font-weight="700">Preview / playback consumers</text>
+                <text x="882" y="330" fill="#9db0b8" font-size="13">Preview layers and arrangement playback may render the same asset under different contracts</text>
+            </svg>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Core Responsibilities</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Responsibility</th>
+                        <th>Meaning</th>
+                        <th>What It Owns</th>
+                        <th>What It Does Not Own</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Reusable beat definition</td>
+                        <td>Acts as the persistent asset for beat design independent of arrangement placement</td>
+                        <td>Pattern identity, bar count, step list, and step properties</td>
+                        <td>Actual arrangement placement or transport authority</td>
+                        <td>This is the asset-side counterpart to the Beat Lane's placement-side truth.</td>
+                    </tr>
+                    <tr>
+                        <td>Shared reference target</td>
+                        <td>Allows multiple Beat Lane blocks to point at the same beat design</td>
+                        <td>The data reused by placements</td>
+                        <td>Which placements exist or when they play</td>
+                        <td>Shared semantics are why a generated-pattern edit can have arrangement-wide consequences.</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern Generator editing target</td>
+                        <td>Provides the authoritative data edited by design-mode and placed-beat sessions</td>
+                        <td>Pattern steps and pattern-level values</td>
+                        <td>Session-local UI state such as selected step or current scroll position</td>
+                        <td>Keeping asset state separate from session state is one of the main hardening goals for the tool.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Relationships In Chord Lab</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Related Object</th>
+                        <th>Relationship</th>
+                        <th>Direction</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Workspace</td>
+                        <td>Generated patterns are owned by the workspace pattern library</td>
+                        <td>Upstream</td>
+                        <td>Patterns do not float globally across the whole project by default; they live inside workspace scope.</td>
+                    </tr>
+                    <tr>
+                        <td>Beat Lane</td>
+                        <td>Beat Lane placements reference generated patterns as reusable assets</td>
+                        <td>Peer / consumer</td>
+                        <td>Beat Lane provides real arrangement timing; Generated Pattern provides reusable content.</td>
+                    </tr>
+                    <tr>
+                        <td>Pattern Generator session</td>
+                        <td>Tool sessions edit and preview the generated pattern asset</td>
+                        <td>Downstream consumer</td>
+                        <td>The session is not the same thing as the asset it is editing.</td>
+                    </tr>
+                    <tr>
+                        <td>Preview layer</td>
+                        <td>Can audition generated pattern content locally without becoming transport authority</td>
+                        <td>Downstream consumer</td>
+                        <td>This is a key contract boundary in current playback design work.</td>
+                    </tr>
+                    <tr>
+                        <td>Beat Lane Block</td>
+                        <td>Atomic placements point at the generated pattern asset</td>
+                        <td>Downstream reference</td>
+                        <td>This is where shared asset state becomes concrete placed arrangement use.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="grid-2" style="margin-top: 22px;">
+        <div class="panel">
+            <h2>Mutation Touch Points</h2>
+            <ul>
+                <li>Generated pattern mutations create, rename, edit, and delete this asset from the workspace library.</li>
+                <li>Session mutations can change which generated pattern a Pattern Generator session is targeting without changing the asset itself.</li>
+                <li>Beat Lane mutations can change where a generated pattern is used in the arrangement without mutating the pattern asset content.</li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h2>Design Tensions / Failure Modes</h2>
+            <ul>
+                <li>The biggest current tension is keeping generated pattern asset edits lightweight while still propagating correctly to all placed Beat Lane references.</li>
+                <li>If a placed-beat edit path and a design-mode edit path do not clearly share the same asset contract, the Pattern Generator can feel brittle or misleading.</li>
+                <li>Because one asset may be referenced in several places, delete, rename, and shared-edit semantics need to remain explicit or users can lose trust quickly.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+        <h2>Related Pages / Next Pages</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3><a href="./BeatLaneBlock.html">Beat Lane Block</a></h3>
+                <p>Read this next to document the atomic placed reference that points at a generated pattern inside Beat Lane.</p>
+            </div>
+            <div class="card">
+                <h3><a href="./PatternGeneratorSession.html">Pattern Generator Session</a></h3>
+                <p>Read this next to separate the shared pattern asset from the local tool state that edits and previews it.</p>
+            </div>
+            <div class="card">
+                <h3><a href="../mutations/GeneratedPatternMutations.html">Generated Pattern Mutations</a></h3>
+                <p>Read this next to connect the asset definition here to the mutation/update contracts that should keep the tool responsive and correct.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
