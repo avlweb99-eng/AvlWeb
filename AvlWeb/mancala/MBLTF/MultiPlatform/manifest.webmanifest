@@ -1,0 +1,25 @@
+{
+  "name": "Mancala Bot Lab Training Facility",
+  "short_name": "MBL Facility",
+  "id": "./",
+  "description": "Portable multi-platform PWA shell for the Mancala Bot Lab training workflow.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08111a",
+  "theme_color": "#10202d",
+  "icons": [
+    {
+      "src": "./icons/icon-app.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

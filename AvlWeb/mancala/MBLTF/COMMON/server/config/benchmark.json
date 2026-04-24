@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "trackId": "weighted-v1",
+  "label": "V1 Weighted Benchmark",
+  "benchmarkBotId": "greedy",
+  "benchmarkBotName": "Greedy Bot",
+  "minimumWinRate": 0.6,
+  "minimumGames": 100,
+  "evaluatedJobTypes": [
+    "weighted-train"
+  ],
+  "celebrationTitle": "Benchmark cleared",
+  "celebrationMessage": "Your bot cleared the current V1 Bot Lab benchmark. That is the moment where we start inviting users to submit standout bots for possible inclusion later.",
+  "submissionInvitation": "Submission is optional and still curated, but this is exactly the kind of run we want to celebrate for the future leaderboard and review flow.",
+  "lastUpdated": "2026-04-22"
+}

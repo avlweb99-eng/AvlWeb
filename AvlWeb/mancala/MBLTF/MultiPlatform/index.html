@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10202d">
+    <meta name="description" content="Portable multi-platform PWA shell for the Mancala Bot Lab Training Facility.">
+    <title>Mancala Bot Lab Training Facility</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icons/icon-app.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./icons/icon-app.svg">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow-a" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow-b" aria-hidden="true"></div>
+
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-card">
+          <div class="brand-mark">MBL</div>
+          <div class="eyebrow">Training Facility</div>
+          <p class="brand-copy">
+            Portable browser shell for the Mancala training workflow, with browser-native equivalents for the desktop-only pieces.
+          </p>
+          <button id="install-app-button" class="button button-accent install-button hidden" type="button">
+            Install App
+          </button>
+        </div>
+
+        <nav class="nav-stack" aria-label="Primary">
+          <button class="nav-button is-active" data-screen="Overview" type="button">Overview</button>
+          <button class="nav-button" data-screen="Train" type="button">Train</button>
+          <button class="nav-button" data-screen="Jobs" type="button">Jobs</button>
+          <button class="nav-button" data-screen="Outputs" type="button">Outputs</button>
+          <button class="nav-button" data-screen="Learn" type="button">Scripts</button>
+          <button class="nav-button" data-screen="Bots" type="button">Bots</button>
+          <button class="nav-button" data-screen="Support" type="button">Support</button>
+        </nav>
+
+        <section class="status-card">
+          <div class="section-kicker">Always Visible</div>
+          <pre id="sidebar-status-text" class="mono-block"></pre>
+        </section>
+      </aside>
+
+      <main class="main-shell">
+        <header class="masthead panel">
+          <div class="masthead-copy">
+            <div id="header-eyebrow-text" class="section-kicker">Portable Training Facility</div>
+            <h1 id="screen-title-text">Overview</h1>
+            <p id="screen-subtitle-text" class="muted"></p>
+          </div>
+          <div class="masthead-status">
+            <div class="signal-card signal-card-good">
+              <div id="health-text"></div>
+            </div>
+            <div class="signal-card">
+              <pre id="status-dock-text" class="mono-block compact"></pre>
+            </div>
+          </div>
+        </header>
+
+        <section id="screen-overview" class="screen is-active" aria-label="Overview screen">
+          <div id="overview-highlights-panel" class="highlight-grid"></div>
+
+          <div class="content-grid content-grid-overview">
+            <article class="panel">
+              <h2>Environment Snapshot</h2>
+              <pre id="overview-summary-text" class="mono-block tall"></pre>
+            </article>
+
+            <article class="panel">
+              <h2>Benchmark Track</h2>
+              <pre id="overview-benchmark-text" class="mono-block tall"></pre>
+            </article>
+
+            <article class="panel">
+              <h2>Training Journey</h2>
+              <pre id="overview-journey-text" class="mono-block tall"></pre>
+            </article>
+
+            <article class="panel">
+              <h2>Paths And Trust Model</h2>
+              <pre id="overview-paths-text" class="mono-block tall"></pre>
+            </article>
+          </div>
+        </section>
+
+        <section id="screen-train" class="screen" aria-label="Train screen">
+          <div class="content-grid content-grid-train">
+            <article class="panel">
+              <div class="panel-intro">
+                <h2>Training Modes</h2>
+                <p class="muted">Choose the pipeline step first. The form and the learning notes change with the selection.</p>
+              </div>
+              <div id="train-mode-list" class="list-stack"></div>
+            </article>
+
+            <div class="stack-column">
+              <article class="panel">
+                <h2 id="train-mode-title-text"></h2>
+                <pre id="train-mode-description-text" class="mono-block medium"></pre>
+              </article>
+
+              <article class="panel fill-panel">
+                <div class="panel-intro">
+                  <h2>Browser Job Form</h2>
+                  <p class="muted">Use the parameter dialog to edit values without crowding the dashboard. Imported JSON files become reusable browser artifacts.</p>
+                </div>
+                <pre id="train-form-summary-text" class="mono-block grow"></pre>
+              </article>
+
+              <article class="panel action-panel">
+                <div class="action-row">
+                  <button id="edit-parameters-button" class="button button-accent" type="button">Edit Parameters</button>
+                  <button id="run-job-button" class="button button-primary" type="button">Run Browser Job</button>
+                  <button id="open-outputs-button" class="button" type="button">Open Outputs Hub</button>
+                  <button id="refresh-train-button" class="button" type="button">Refresh Status</button>
+                </div>
+                <div class="field-stack">
+                  <div>
+                    <div class="section-kicker">Status</div>
+                    <pre id="train-status-text" class="mono-block short"></pre>
+                  </div>
+                  <div>
+                    <div class="section-kicker">Command Preview</div>
+                    <pre id="train-command-preview-text" class="mono-block short"></pre>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="stack-column">
+              <article class="panel fill-panel">
+                <h2>How This Mode Works</h2>
+                <pre id="train-guide-text" class="mono-block grow"></pre>
+              </article>
+
+              <article class="panel fill-panel">
+                <h2>Benchmark Coach</h2>
+                <pre id="train-benchmark-text" class="mono-block grow"></pre>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-jobs" class="screen" aria-label="Jobs screen">
+          <div class="content-grid content-grid-master-detail">
+            <article class="panel">
+              <div class="panel-intro row-between">
+                <h2>Browser Jobs</h2>
+                <button id="refresh-jobs-button" class="button" type="button">Refresh Jobs</button>
+              </div>
+              <div id="jobs-list" class="list-stack"></div>
+            </article>
+
+            <div class="stack-column">
+              <article class="panel">
+                <h2>Selected Job</h2>
+                <pre id="job-summary-text" class="mono-block medium"></pre>
+              </article>
+
+              <article class="panel">
+                <h2>Job Paths</h2>
+                <pre id="job-paths-text" class="mono-block medium"></pre>
+              </article>
+
+              <article class="panel fill-panel">
+                <h2>Live Log</h2>
+                <pre id="job-log-text" class="mono-block grow"></pre>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-outputs" class="screen" aria-label="Outputs screen">
+          <div class="content-grid content-grid-master-detail">
+            <article class="panel">
+              <div class="panel-intro row-between">
+                <h2>Artifacts</h2>
+                <div class="button-strip">
+                  <button id="import-output-button" class="button button-accent" type="button">Import JSON</button>
+                  <button id="refresh-outputs-button" class="button" type="button">Refresh Outputs</button>
+                </div>
+              </div>
+              <div id="outputs-list" class="list-stack"></div>
+            </article>
+
+            <div class="stack-column">
+              <article class="panel">
+                <div class="panel-intro row-between">
+                  <h2>Artifact Detail</h2>
+                  <button id="download-artifact-button" class="button button-primary" type="button">Download Artifact</button>
+                </div>
+                <pre id="artifact-detail-text" class="mono-block medium"></pre>
+              </article>
+
+              <article class="panel fill-panel">
+                <h2>Import And Next Step</h2>
+                <pre id="artifact-guide-text" class="mono-block grow"></pre>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-learn" class="screen" aria-label="Scripts screen">
+          <div id="learn-overview-panel" class="highlight-grid learn-grid"></div>
+
+          <div class="content-grid content-grid-master-detail">
+            <article class="panel">
+              <div class="panel-intro">
+                <h2>Script Catalog</h2>
+                <p class="muted">Choose a script to see beginner notes, parameters, annotations, and the browser-side equivalent source recipe.</p>
+              </div>
+              <div id="script-list" class="list-stack"></div>
+            </article>
+
+            <div class="stack-column">
+              <article class="panel">
+                <h2>Script Guidance</h2>
+                <pre id="script-detail-text" class="mono-block medium"></pre>
+              </article>
+
+              <article class="panel fill-panel">
+                <h2>Source</h2>
+                <pre id="script-source-text" class="mono-block grow"></pre>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-bots" class="screen" aria-label="Bots screen">
+          <div class="content-grid content-grid-master-detail">
+            <article class="panel">
+              <div class="panel-intro">
+                <h2>Factory Roster</h2>
+                <p class="muted">A shared language for what each baseline opponent is trying to do before training starts.</p>
+              </div>
+              <div id="bots-list" class="list-stack"></div>
+            </article>
+
+            <article class="panel fill-panel">
+              <h2>Bot Detail</h2>
+              <pre id="bot-detail-text" class="mono-block grow"></pre>
+            </article>
+          </div>
+        </section>
+
+        <section id="screen-support" class="screen" aria-label="Support screen">
+          <div class="content-grid content-grid-support">
+            <article class="panel fill-panel">
+              <h2>Recovery Guide</h2>
+              <pre id="support-notes-text" class="mono-block grow"></pre>
+            </article>
+
+            <article class="panel fill-panel">
+              <h2>Diagnostics</h2>
+              <pre id="diagnostics-text" class="mono-block grow"></pre>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="parameter-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="parameter-modal-title">
+      <div class="modal-backdrop" data-close-modal="true"></div>
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <div class="section-kicker">Parameter Dialog</div>
+            <h2 id="parameter-modal-title">Edit Parameters</h2>
+            <p id="parameter-modal-subtitle" class="muted"></p>
+          </div>
+          <button id="close-modal-button" class="icon-button" type="button" aria-label="Close parameter dialog">x</button>
+        </div>
+
+        <div class="modal-grid">
+          <div class="panel modal-panel">
+            <div id="parameter-form-fields" class="form-stack"></div>
+          </div>
+
+          <div class="panel modal-panel">
+            <h3>Parameter Summary</h3>
+            <pre id="parameter-preview-text" class="mono-block grow"></pre>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button id="save-parameters-button" class="button button-primary" type="button">Save Parameters</button>
+          <button id="cancel-parameters-button" class="button" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <input id="artifact-upload-input" type="file" accept=".json,application/json" hidden>
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
