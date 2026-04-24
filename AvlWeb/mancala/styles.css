@@ -376,8 +376,14 @@ h3 {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05), transparent 30%);
+  background:
+    linear-gradient(180deg, rgba(7, 12, 18, 0.58), rgba(7, 12, 18, 0.68)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.05), transparent 30%),
+    url("Assets/Images/MancalaGameBoardPanelBackground.jpg");
+  background-size: cover;
+  background-position: center;
   pointer-events: none;
+  z-index: 0;
 }
 
 .board-header,
@@ -442,6 +448,11 @@ h3 {
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -18px 26px rgba(0, 0, 0, 0.24),
     var(--shadow-lg);
+}
+
+.legend-row {
+  position: relative;
+  z-index: 1;
 }
 
 .board::before {
