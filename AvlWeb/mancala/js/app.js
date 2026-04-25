@@ -25,6 +25,14 @@ const elements = {
   turnText: document.getElementById('turnText'),
   hintBtn: document.getElementById('hintBtn'),
   modeBadge: document.getElementById('modeBadge'),
+  settingsSfxVolume: document.getElementById('settingsSfxVolume'),
+  settingsSfxVolumeValue: document.getElementById('settingsSfxVolumeValue'),
+  settingsMusicVolume: document.getElementById('settingsMusicVolume'),
+  settingsMusicVolumeValue: document.getElementById('settingsMusicVolumeValue'),
+  jukeboxTrackList: document.getElementById('jukeboxTrackList'),
+  jukeboxPlayBtn: document.getElementById('jukeboxPlayBtn'),
+  jukeboxStopBtn: document.getElementById('jukeboxStopBtn'),
+  jukeboxStatus: document.getElementById('jukeboxStatus'),
   workspaceTabs: Array.from(document.querySelectorAll('[data-tab-target]')),
   workspacePanels: Array.from(document.querySelectorAll('[data-tab-panel]')),
   leaderboardStatusText: document.getElementById('leaderboardStatusText'),
@@ -129,6 +137,19 @@ const uiEffects = {
   activeTab: 'game',
 };
 
+const SETTINGS_STORAGE_KEY = 'mancala-global-settings-v1';
+const JUKEBOX_CONFIG_URL = 'Assets/JukeboxTracks/jukeboxconfig.xml';
+
+const settingsState = loadSettings();
+
+const jukeboxState = {
+  loading: true,
+  tracks: [],
+  isPlaying: false,
+  currentTrackFilename: '',
+  status: 'Loading jukebox tracks...',
+};
+
 const labState = {
   profiles: loadStoredProfiles(),
   selectedProfileId: null,
@@ -148,6 +169,7 @@ Object.assign(labState.evaluation, getDefaultEvaluationSelections(labState.profi
 
 let latestViewModel = null;
 let audioContext = null;
+const jukeboxAudio = new Audio();
 const weightInputs = new Map();
 
 function wait(ms) {
@@ -170,6 +192,41 @@ function ensureAudioContext() {
   return audioContext;
 }
 
+function loadSettings() {
+  const fallback = {
+    sfxVolume: 1,
+    musicVolume: 0.7,
+    selectedJukeboxTrackFilename: '',
+  };
+
+  try {
+    const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return {
+      sfxVolume: clampUnit(parsed.sfxVolume, fallback.sfxVolume),
+      musicVolume: clampUnit(parsed.musicVolume, fallback.musicVolume),
+      selectedJukeboxTrackFilename: typeof parsed.selectedJukeboxTrackFilename === 'string'
+        ? parsed.selectedJukeboxTrackFilename
+        : fallback.selectedJukeboxTrackFilename,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function saveSettings() {
+  try {
+    window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settingsState));
+  } catch {}
+}
+
+function clampUnit(value, fallback = 1) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.min(1, Math.max(0, numeric));
+}
+
 function playTone({ frequency = 440, duration = 0.08, type = 'sine', gain = 0.04, attack = 0.002, release = 0.06, detune = 0 }) {
   const ctx = ensureAudioContext();
   if (!ctx) return;
@@ -187,8 +244,9 @@ function playTone({ frequency = 440, duration = 0.08, type = 'sine', gain = 0.04
   filter.frequency.setValueAtTime(1500, now);
   filter.Q.value = 0.75;
 
+  const effectiveGain = gain * settingsState.sfxVolume;
   gainNode.gain.setValueAtTime(0.0001, now);
-  gainNode.gain.linearRampToValueAtTime(gain, now + attack);
+  gainNode.gain.linearRampToValueAtTime(Math.max(0.0001, effectiveGain), now + attack);
   gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration + release);
 
   oscillator.connect(filter);
@@ -199,9 +257,13 @@ function playTone({ frequency = 440, duration = 0.08, type = 'sine', gain = 0.04
   oscillator.stop(now + duration + release + 0.02);
 }
 
+function applyMusicVolume() {
+  jukeboxAudio.volume = settingsState.musicVolume;
+}
+
 function playPickupSound() {
-  playTone({ frequency: 210, duration: 0.04, type: 'triangle', gain: 0.03, attack: 0.003, release: 0.08, detune: -6 });
-  setTimeout(() => playTone({ frequency: 252, duration: 0.04, type: 'triangle', gain: 0.022, attack: 0.003, release: 0.08, detune: 6 }), 26);
+  playTone({ frequency: 210, duration: 0.04, type: 'triangle', gain: 0.054, attack: 0.003, release: 0.08, detune: -6 });
+  setTimeout(() => playTone({ frequency: 252, duration: 0.04, type: 'triangle', gain: 0.0396, attack: 0.003, release: 0.08, detune: 6 }), 26);
 }
 
 function playTickSound(stepIndex) {
@@ -209,7 +271,7 @@ function playTickSound(stepIndex) {
     frequency: 720 + (stepIndex % 4) * 28,
     duration: 0.016,
     type: 'square',
-    gain: 0.011,
+    gain: 0.0198,
     attack: 0.001,
     release: 0.018,
     detune: stepIndex % 2 === 0 ? -3 : 3,
@@ -418,6 +480,7 @@ function renderLatest() {
   renderWorkspaceTabs();
   renderLeaderboard(latestViewModel);
   renderBotLab();
+  renderSettings();
 
   elements.modeBadge.textContent = modeLabels[mode] ?? mode;
   elements.hintBtn.classList.toggle('hidden', !showHintButton);
@@ -487,7 +550,152 @@ function renderLatest() {
       progress: labState.evaluation.progress,
       totalGames: labState.evaluation.totalGames,
     },
+    settings: {
+      sfxVolume: settingsState.sfxVolume,
+      musicVolume: settingsState.musicVolume,
+      selectedJukeboxTrackFilename: settingsState.selectedJukeboxTrackFilename,
+      jukeboxPlaying: jukeboxState.isPlaying,
+      jukeboxTrackCount: jukeboxState.tracks.length,
+    },
   });
+}
+
+function renderSettings() {
+  if (elements.settingsSfxVolume) {
+    const sfxPercent = Math.round(settingsState.sfxVolume * 100);
+    elements.settingsSfxVolume.value = String(sfxPercent);
+    elements.settingsSfxVolumeValue.textContent = `${sfxPercent}%`;
+  }
+
+  if (elements.settingsMusicVolume) {
+    const musicPercent = Math.round(settingsState.musicVolume * 100);
+    elements.settingsMusicVolume.value = String(musicPercent);
+    elements.settingsMusicVolumeValue.textContent = `${musicPercent}%`;
+  }
+
+  renderJukebox();
+}
+
+function renderJukebox() {
+  if (!elements.jukeboxTrackList || !elements.jukeboxPlayBtn || !elements.jukeboxStopBtn || !elements.jukeboxStatus) {
+    return;
+  }
+
+  const optionsMarkup = jukeboxState.tracks.map((track) => (
+    `<option value="${escapeHtml(track.trackfilename)}">${escapeHtml(track.trackdisplayname)}</option>`
+  )).join('');
+
+  if (elements.jukeboxTrackList.innerHTML !== optionsMarkup) {
+    elements.jukeboxTrackList.innerHTML = optionsMarkup;
+  }
+
+  const selectedTrack = getSelectedJukeboxTrack();
+  if (selectedTrack) {
+    elements.jukeboxTrackList.value = selectedTrack.trackfilename;
+  }
+
+  const hasTracks = jukeboxState.tracks.length > 0;
+  elements.jukeboxTrackList.disabled = !hasTracks || jukeboxState.loading;
+  elements.jukeboxPlayBtn.disabled = !hasTracks || jukeboxState.loading;
+  elements.jukeboxStopBtn.disabled = !jukeboxState.isPlaying;
+  elements.jukeboxStatus.textContent = jukeboxState.status;
+}
+
+function getSelectedJukeboxTrack() {
+  if (!jukeboxState.tracks.length) return null;
+  const selectedFilename = settingsState.selectedJukeboxTrackFilename;
+  return jukeboxState.tracks.find((track) => track.trackfilename === selectedFilename) ?? jukeboxState.tracks[0];
+}
+
+async function loadJukeboxConfig() {
+  jukeboxState.loading = true;
+  jukeboxState.status = 'Loading jukebox tracks...';
+  renderSettings();
+
+  try {
+    const response = await fetch(JUKEBOX_CONFIG_URL, { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`Unable to load ${JUKEBOX_CONFIG_URL}`);
+    }
+
+    const xmlText = await response.text();
+    const parsed = new DOMParser().parseFromString(xmlText, 'application/xml');
+    if (parsed.querySelector('parsererror')) {
+      throw new Error('Invalid jukebox XML.');
+    }
+
+    const tracks = Array.from(parsed.querySelectorAll('track')).map((trackNode) => ({
+      trackdisplayname: trackNode.querySelector('trackdisplayname')?.textContent?.trim() ?? '',
+      trackfilename: trackNode.querySelector('trackfilename')?.textContent?.trim() ?? '',
+    })).filter((track) => track.trackdisplayname && track.trackfilename);
+
+    jukeboxState.tracks = tracks;
+    jukeboxState.loading = false;
+
+    if (!tracks.length) {
+      settingsState.selectedJukeboxTrackFilename = '';
+      jukeboxState.status = 'No tracks are currently listed in jukeboxconfig.xml.';
+      saveSettings();
+      renderSettings();
+      return;
+    }
+
+    const selectedTrack = tracks.some((track) => track.trackfilename === settingsState.selectedJukeboxTrackFilename)
+      ? getSelectedJukeboxTrack()
+      : tracks[0];
+    settingsState.selectedJukeboxTrackFilename = selectedTrack?.trackfilename ?? '';
+    jukeboxState.status = `Ready: ${selectedTrack?.trackdisplayname ?? tracks[0].trackdisplayname}`;
+    saveSettings();
+    renderSettings();
+  } catch (error) {
+    jukeboxState.loading = false;
+    jukeboxState.tracks = [];
+    settingsState.selectedJukeboxTrackFilename = '';
+    jukeboxState.status = `Jukebox unavailable: ${error.message}`;
+    saveSettings();
+    renderSettings();
+  }
+}
+
+async function playSelectedJukeboxTrack() {
+  const selectedTrack = getSelectedJukeboxTrack();
+  if (!selectedTrack) {
+    jukeboxState.status = 'No track selected.';
+    renderSettings();
+    return;
+  }
+
+  try {
+    applyMusicVolume();
+    const nextSrc = encodeURI(`Assets/JukeboxTracks/${selectedTrack.trackfilename}`);
+    if (!jukeboxAudio.src.endsWith(nextSrc)) {
+      jukeboxAudio.src = nextSrc;
+    }
+    jukeboxAudio.loop = true;
+    await jukeboxAudio.play();
+    jukeboxState.isPlaying = true;
+    jukeboxState.currentTrackFilename = selectedTrack.trackfilename;
+    jukeboxState.status = `Playing: ${selectedTrack.trackdisplayname}`;
+    renderSettings();
+  } catch (error) {
+    jukeboxState.isPlaying = false;
+    jukeboxState.status = `Playback failed: ${error.message}`;
+    renderSettings();
+  }
+}
+
+function stopJukeboxTrack() {
+  jukeboxAudio.pause();
+  try {
+    jukeboxAudio.currentTime = 0;
+  } catch {}
+  jukeboxState.isPlaying = false;
+  jukeboxState.currentTrackFilename = '';
+  const selectedTrack = getSelectedJukeboxTrack();
+  jukeboxState.status = selectedTrack
+    ? `Stopped: ${selectedTrack.trackdisplayname}`
+    : 'Playback stopped.';
+  renderSettings();
 }
 
 function renderLeaderboard(viewModel) {
@@ -1189,6 +1397,46 @@ for (const button of elements.workspaceTabs) {
   button.addEventListener('click', () => setActiveTab(button.dataset.tabTarget));
 }
 
+if (elements.settingsSfxVolume) {
+  elements.settingsSfxVolume.addEventListener('input', (event) => {
+    settingsState.sfxVolume = clampUnit(Number(event.target.value) / 100, settingsState.sfxVolume);
+    saveSettings();
+    renderSettings();
+  });
+}
+
+if (elements.settingsMusicVolume) {
+  elements.settingsMusicVolume.addEventListener('input', (event) => {
+    settingsState.musicVolume = clampUnit(Number(event.target.value) / 100, settingsState.musicVolume);
+    saveSettings();
+    applyMusicVolume();
+    renderSettings();
+  });
+}
+
+if (elements.jukeboxTrackList) {
+  elements.jukeboxTrackList.addEventListener('change', (event) => {
+    settingsState.selectedJukeboxTrackFilename = event.target.value;
+    saveSettings();
+    const selectedTrack = getSelectedJukeboxTrack();
+    if (!jukeboxState.isPlaying && selectedTrack) {
+      jukeboxState.status = `Selected: ${selectedTrack.trackdisplayname}`;
+    }
+    renderSettings();
+  });
+}
+
+if (elements.jukeboxPlayBtn) {
+  elements.jukeboxPlayBtn.addEventListener('click', () => {
+    ensureAudioContext();
+    playSelectedJukeboxTrack();
+  });
+}
+
+if (elements.jukeboxStopBtn) {
+  elements.jukeboxStopBtn.addEventListener('click', () => stopJukeboxTrack());
+}
+
 elements.gameMode.addEventListener('change', (event) => {
   clearHint();
   controller.setMode(event.target.value);
@@ -1434,7 +1682,19 @@ window.advanceTime = async (ms) => {
   await wait(ms);
 };
 
+applyMusicVolume();
+jukeboxAudio.loop = true;
+jukeboxAudio.addEventListener('error', () => {
+  jukeboxState.isPlaying = false;
+  const selectedTrack = getSelectedJukeboxTrack();
+  jukeboxState.status = selectedTrack
+    ? `Playback error: ${selectedTrack.trackdisplayname}`
+    : 'Playback error.';
+  renderSettings();
+});
+
 initWeightInputs();
 renderWorkspaceTabs();
+loadJukeboxConfig();
 controller.setCustomProfiles(labState.profiles);
 controller.restart();

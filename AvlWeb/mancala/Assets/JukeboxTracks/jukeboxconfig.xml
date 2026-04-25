@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jukebox>
+  <!--
+    Add one <track> entry per MP3 file stored in Assets/JukeboxTracks.
+    Example:
+    <track>
+      <trackdisplayname>Mancala Glow</trackdisplayname>
+      <trackfilename>Mancala Glow.mp3</trackfilename>
+    </track>
+  -->
+  <track>
+    <trackdisplayname>Mancala Glow</trackdisplayname>
+    <trackfilename>Mancala Glow.mp3</trackfilename>
+  </track>
+  <track>
+    <trackdisplayname>Mancala Gloh</trackdisplayname>
+    <trackfilename>Mancala Gloh.mp3</trackfilename>
+  </track>
+</jukebox>
