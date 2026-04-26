@@ -93,6 +93,7 @@ const elements = {
   labEvaluationStatus: document.getElementById('labEvaluationStatus'),
   labEvaluationSummary: document.getElementById('labEvaluationSummary'),
   labEvaluationBadge: document.getElementById('labEvaluationBadge'),
+  mobileTabDock: document.getElementById('mobileTabDock'),
 };
 
 const modeLabels = {
@@ -139,6 +140,7 @@ const uiEffects = {
 
 const SETTINGS_STORAGE_KEY = 'mancala-global-settings-v1';
 const JUKEBOX_CONFIG_URL = 'Assets/JukeboxTracks/jukeboxconfig.xml';
+const SMALL_SCREEN_MEDIA_QUERY = '(max-width: 900px)';
 
 const settingsState = loadSettings();
 
@@ -171,6 +173,7 @@ let latestViewModel = null;
 let audioContext = null;
 const jukeboxAudio = new Audio();
 const weightInputs = new Map();
+const smallScreenMediaQuery = window.matchMedia(SMALL_SCREEN_MEDIA_QUERY);
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -391,11 +394,25 @@ function setDrawerOpen(open) {
   elements.drawerBackdrop.classList.toggle('hidden', !open);
   elements.configDrawer.setAttribute('aria-hidden', String(!open));
   elements.configToggleBtn.setAttribute('aria-expanded', String(open));
+  document.body.classList.toggle('drawer-open', open);
   document.body.style.overflow = open ? 'hidden' : '';
 }
 
+function syncSiteMode(isSmallScreen) {
+  const siteMode = isSmallScreen ? 'mobile' : 'desktop';
+  document.body.dataset.siteMode = siteMode;
+  document.documentElement.dataset.siteMode = siteMode;
+  if (elements.mobileTabDock) {
+    elements.mobileTabDock.setAttribute('aria-hidden', String(!isSmallScreen));
+  }
+}
+
 function setActiveTab(tabId) {
+  const changed = uiEffects.activeTab !== tabId;
   uiEffects.activeTab = tabId;
+  if (changed && uiEffects.drawerOpen) {
+    setDrawerOpen(false);
+  }
   renderWorkspaceTabs();
 }
 
@@ -557,6 +574,7 @@ function renderLatest() {
       jukeboxPlaying: jukeboxState.isPlaying,
       jukeboxTrackCount: jukeboxState.tracks.length,
     },
+    siteMode: document.body.dataset.siteMode,
   });
 }
 
@@ -1397,6 +1415,12 @@ for (const button of elements.workspaceTabs) {
   button.addEventListener('click', () => setActiveTab(button.dataset.tabTarget));
 }
 
+if (typeof smallScreenMediaQuery.addEventListener === 'function') {
+  smallScreenMediaQuery.addEventListener('change', (event) => syncSiteMode(event.matches));
+} else if (typeof smallScreenMediaQuery.addListener === 'function') {
+  smallScreenMediaQuery.addListener((event) => syncSiteMode(event.matches));
+}
+
 if (elements.settingsSfxVolume) {
   elements.settingsSfxVolume.addEventListener('input', (event) => {
     settingsState.sfxVolume = clampUnit(Number(event.target.value) / 100, settingsState.sfxVolume);
@@ -1694,6 +1718,7 @@ jukeboxAudio.addEventListener('error', () => {
 });
 
 initWeightInputs();
+syncSiteMode(smallScreenMediaQuery.matches);
 renderWorkspaceTabs();
 loadJukeboxConfig();
 controller.setCustomProfiles(labState.profiles);
