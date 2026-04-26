@@ -1086,14 +1086,22 @@ button.pit.active-turn .pit-count,
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.facility-demo-video {
+.facility-demo-video,
+.facility-demo-video-embed {
   width: 100%;
   min-height: 100%;
   border-radius: 18px;
   background: #090b0f;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  object-fit: contain;
+}
+
+.facility-demo-video-embed {
+  overflow: hidden;
+}
+
+.facility-demo-video-embed iframe {
+  border: 0;
 }
 
 .lab-panel {
