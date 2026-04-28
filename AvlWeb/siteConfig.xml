@@ -8,26 +8,12 @@
       <okforMobile>Yes</okforMobile>
       <Description>Gimme Friction, Baby!  A port of the 2007 game by Wooter Visser</Description>
     </project>
-    <project id="ApocalypseGolf">
-      <labelTxt>Apocalypse Golf</labelTxt>
-      <url>ApocalypseGolfGame\Index.html</url>
-      <thumbnailImage>Images\ApocalypseGolfThumbnail.png</thumbnailImage>
-      <okforMobile>No</okforMobile>
-      <Description>Fore!</Description>
-    </project>
     <project id="Mancala">
       <labelTxt>Mancala</labelTxt>
       <url>mancala\Mancala.html</url>
       <thumbnailImage>Images\MancalaThumbnail.png</thumbnailImage>
       <okforMobile>Yes</okforMobile>
       <Description>Mancala Showdown: Battle Minimax, Value Policy, Weighted and Rules Bots in the AI Bot Lab!</Description>
-    </project>
-    <project id="BrickBeats">
-      <labelTxt>Brick Beats</labelTxt>
-      <url>BrickBeats\Index.html</url>
-      <thumbnailImage>Images\BrickBeatsThumbnail.png</thumbnailImage>
-      <okforMobile>No</okforMobile>
-      <Description>Bricks!</Description>
     </project>
     <PlugIns>
       <plugIn id="ChordLab">
