@@ -29,13 +29,6 @@
       <okforMobile>No</okforMobile>
       <Description>Bricks!</Description>
     </project>
-        <project id="Shipsh">
-      <labelTxt>Shipsh</labelTxt>
-      <url>Shipsh\Index.html</url>
-      <thumbnailImage>Images\Shipsh_Thumb.png</thumbnailImage>
-      <okforMobile>Yes</okforMobile>
-      <Description>One-click deploy for builders.  Coming soon!</Description>
-    </project>
     <PlugIns>
       <plugIn id="ChordLab">
         <labelTxt>ChordLab</labelTxt>
@@ -44,6 +37,13 @@
         <okforMobile>Yes</okforMobile>
         <Description>Chord-focused plug-in workspace with an Object Diagram hub and product demo.</Description>
       </plugIn>
+      <plugIn id="Shipsh">
+        <labelTxt>Shipsh</labelTxt>
+        <url>Shipsh\index.html</url>
+        <thumbnailImage>Images\Shipsh_Thumb.jpg</thumbnailImage>
+        <okforMobile>Yes</okforMobile>
+        <Description>One-click deployments for builders.  Coming Soon!.</Description>
+      </plugIn>      
       <!-- Add plugIn entries here using the same fields as project nodes. -->
     </PlugIns>
   </projects>
