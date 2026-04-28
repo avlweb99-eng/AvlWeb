@@ -29,6 +29,13 @@
       <okforMobile>No</okforMobile>
       <Description>Bricks!</Description>
     </project>
+        <project id="Shipsh">
+      <labelTxt>Shipsh</labelTxt>
+      <url>Shipsh\Index.html</url>
+      <thumbnailImage>Images\Shipsh_Thumb.png</thumbnailImage>
+      <okforMobile>Yes</okforMobile>
+      <Description>One-click deploy for builders.  Coming soon!</Description>
+    </project>
     <PlugIns>
       <plugIn id="ChordLab">
         <labelTxt>ChordLab</labelTxt>
